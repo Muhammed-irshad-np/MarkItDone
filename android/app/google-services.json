@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1017096100184",
+    "project_id": "markitdone-54365",
+    "storage_bucket": "markitdone-54365.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1017096100184:android:e9ec15050488059124ad2d",
+        "android_client_info": {
+          "package_name": "com.markitdone.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANSyyUqDGjlce_ncbnC0JzcLQbItzT5w8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

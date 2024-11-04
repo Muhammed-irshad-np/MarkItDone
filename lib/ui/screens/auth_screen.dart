@@ -29,10 +29,11 @@ class AuthScreen extends StatelessWidget {
                   onPressed: () async {
                     // Trigger phone number verification
                     final res = await viewModel.registerorloginuser(context);
+                    if (res['documentId'] == null) return;
                     if (res['isFirstTimeUser']) {
                       Navigator.pushReplacementNamed(context, '/register');
                     } else {
-                      Navigator.pushReplacementNamed(context, '/task');
+                      Navigator.pushReplacementNamed(context, '/home');
                     }
                   },
                   child: Text('login'),

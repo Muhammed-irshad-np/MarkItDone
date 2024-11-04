@@ -33,7 +33,7 @@ class _RegisterAndPermissionScreenState
         await viewModel.updateUserNameAndStatus(name, viewModel.documentId!);
 
     if (res) {
-      Navigator.pushReplacementNamed(context, '/task');
+      Navigator.pushReplacementNamed(context, '/home');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to update user name and status')),

@@ -1,0 +1,133 @@
+import 'package:flutter/material.dart';
+import 'package:markitdone/ui/screens/task_creation.dart';
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Task Manager'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            // Search Field
+            TextField(
+              decoration: InputDecoration(
+                hintText: 'Search task',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // 2x2 Grid
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                children: const [
+                  CategoryCard(
+                    icon: Icons.person,
+                    title: 'Personal',
+                    color: Colors.blue,
+                  ),
+                  CategoryCard(
+                    icon: Icons.assignment_ind,
+                    title: 'Assigned',
+                    color: Colors.green,
+                  ),
+                  CategoryCard(
+                    icon: Icons.calendar_today,
+                    title: 'Scheduled',
+                    color: Colors.orange,
+                  ),
+                  CategoryCard(
+                    icon: Icons.check_circle,
+                    title: 'Completed',
+                    color: Colors.purple,
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Container(
+                  width: double.infinity,
+                  height: 20,
+                  child: const CategoryCard(
+                    
+                    icon: Icons.person,
+                    title: 'User Tasks',
+                    color: Colors.teal,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          // Navigator.pushNamed(context, '/task');
+          TaskCreationBottomSheet.show(context);
+        },
+        icon: const Icon(Icons.add),
+        label: const Text('Add Task'),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+}
+
+class CategoryCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final Color color;
+
+  const CategoryCard({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      child: InkWell(
+        onTap: () {
+          // Navigate to category screen
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 40,
+              color: color,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

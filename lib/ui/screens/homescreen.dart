@@ -1,8 +1,27 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:markitdone/ui/screens/task_creation.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    final String? userId = _auth.currentUser?.uid;
+    log(userId ?? "No user id found");
+
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +83,6 @@ class HomeScreen extends StatelessWidget {
                   width: double.infinity,
                   height: 20,
                   child: const CategoryCard(
-                    
                     icon: Icons.person,
                     title: 'User Tasks',
                     color: Colors.teal,

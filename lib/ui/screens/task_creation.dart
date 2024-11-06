@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:markitdone/providers/view_models/tasks_viewmodel.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 class TaskCreationBottomSheet extends StatefulWidget {
   const TaskCreationBottomSheet({super.key});
@@ -132,6 +134,8 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<TasksViewmodel>(context);
+
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -165,6 +169,14 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                       'description': _descriptionController.text,
                       'dueDate': _dueDate,
                     };
+                    try {
+
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error adding task: $e')),
+                      );
+                      return;
+                    }
                     Navigator.pop(context, task);
                   }
                 },

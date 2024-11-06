@@ -30,6 +30,7 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
+
   DateTime? _dueDate;
   String? _selectedChip;
   Contact? _selectedContact;

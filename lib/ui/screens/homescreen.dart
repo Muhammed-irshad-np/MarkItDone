@@ -51,23 +51,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisCount: 2,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
-                children: const [
+                children: [
                   CategoryCard(
+                    onTap: () {},
                     icon: Icons.person,
                     title: 'Personal',
                     color: Colors.blue,
                   ),
                   CategoryCard(
+                    onTap: () {},
                     icon: Icons.assignment_ind,
                     title: 'Assigned',
                     color: Colors.green,
                   ),
                   CategoryCard(
+                    onTap: () {},
                     icon: Icons.calendar_today,
                     title: 'Scheduled',
                     color: Colors.orange,
                   ),
                   CategoryCard(
+                    onTap: () {},
                     icon: Icons.check_circle,
                     title: 'Completed',
                     color: Colors.purple,
@@ -82,7 +86,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   width: double.infinity,
                   height: 20,
-                  child: const CategoryCard(
+                  child: CategoryCard(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/createdTaskList');
+                    },
                     icon: Icons.person,
                     title: 'User Tasks',
                     color: Colors.teal,
@@ -110,12 +117,14 @@ class CategoryCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final Color color;
+  void Function() onTap;
 
-  const CategoryCard({
+  CategoryCard({
     super.key,
     required this.icon,
     required this.title,
     required this.color,
+    required this.onTap,
   });
 
   @override
@@ -123,9 +132,7 @@ class CategoryCard extends StatelessWidget {
     return Card(
       elevation: 4,
       child: InkWell(
-        onTap: () {
-          // Navigate to category screen
-        },
+        onTap: onTap,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

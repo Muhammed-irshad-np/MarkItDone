@@ -7,6 +7,7 @@ import 'package:markitdone/firebase_options.dart';
 import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
 import 'package:markitdone/providers/view_models/tasks_viewmodel.dart';
 import 'package:markitdone/ui/screens/auth_screen.dart';
+import 'package:markitdone/ui/screens/created_task_screen.dart';
 import 'package:markitdone/ui/screens/homescreen.dart';
 import 'package:markitdone/ui/screens/register_and_permission_screen.dart';
 import 'package:markitdone/ui/screens/task_creation.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => AuthScreen(),
           '/register': (context) => const RegisterAndPermissionScreen(),
+          '/createdTaskList': (context) => const TaskListingScreen(),
           // '/task': (context) => const TaskCreationScreen(),
           '/home': (context) => const HomeScreen(),
         },

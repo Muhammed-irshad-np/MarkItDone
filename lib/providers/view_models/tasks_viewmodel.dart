@@ -6,7 +6,22 @@ class TasksViewmodel extends ChangeNotifier {
 
   TasksViewmodel(this._addTaskRepository);
 
-  addtask(BuildContext context, Map<String, dynamic> task) async {
-    final res = await _addTaskRepository.addTask();
+  Future<bool> addtask(BuildContext context,
+      {required String assignedTo,
+      required String createdBy,
+      required DateTime scheduledTime,
+      required String title,
+      required bool isPostponed,
+      required String state}) async {
+    final res = await _addTaskRepository.addTask(
+      assignedTo: assignedTo,
+      createdBy: createdBy,
+      scheduledTime: scheduledTime,
+      title: title,
+      isPostponed: isPostponed,
+      state: state,
+    );
+    print("logggg $res");
+    return res;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:markitdone/providers/view_models/tasks_viewmodel.dart';
@@ -162,7 +163,7 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
               ),
               IconButton(
                 icon: const Icon(Icons.check),
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     final task = {
                       'title': _titleController.text,
@@ -170,14 +171,36 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                       'dueDate': _dueDate,
                     };
                     try {
-
+                      // Map<String, dynamic> task = {
+                      //   // Updated collection name
+                      //   'title': _titleController.text,
+                      //   'assignedTo': "",
+                      //   'createdBy': "",
+                      //   'scheduledTime':
+                      //       Timestamp.fromDate(_dueDate ?? DateTime.now()),
+                      //   'state': "inProgress",
+                      //   'isPostponed': true,
+                      //   'createdAt': FieldValue.serverTimestamp(),
+                      //   'updatedAt': FieldValue.serverTimestamp(),
+                      // };
+                      final finalvalue = await viewModel.addtask(
+                        context,
+                        assignedTo: "",
+                        createdBy: "",
+                        isPostponed: true,
+                        scheduledTime: DateTime.now(),
+                        state: "inProgress",
+                        title: _titleController.text,
+                      );
+                      if (finalvalue) {
+                        Navigator.pop(context, task);
+                      }
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Error adding task: $e')),
                       );
                       return;
                     }
-                    Navigator.pop(context, task);
                   }
                 },
               ),

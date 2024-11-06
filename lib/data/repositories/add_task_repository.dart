@@ -18,16 +18,16 @@ class AddTaskRepository {
     try {
       // ... existing validation ...
 
-      await _firestore.collection('alltasks').add({
+      await _firestore.collection('alltasks').doc().set({
         // Updated collection name
         'title': title,
-        'assignedTo': assignedTo,
+        'assignedto': assignedTo,
         'createdBy': createdBy,
         'scheduledTime': Timestamp.fromDate(scheduledTime),
         'state': state,
-        'isPostponed': isPostponed,
-        'createdAt': FieldValue.serverTimestamp(),
-        'updatedAt': FieldValue.serverTimestamp(),
+        'ispostponed': isPostponed,
+        'createdDate': FieldValue.serverTimestamp(),
+        'updatedat': FieldValue.serverTimestamp(),
       });
 
       return true;

@@ -188,11 +188,15 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                       // };
                       final finalvalue = await viewModel.addtask(
                         context,
-                        assignedTo: _selectedContact!.phones[0].normalizedNumber
-                            .replaceFirst('+1', ''),
+                        assignedTo: _filterValueData.contains('assign')
+                            ? _selectedContact!.phones[0].normalizedNumber
+                                .replaceFirst('+1', '')
+                            : widget.phNumberController,
                         createdBy: widget.phNumberController,
-                        isPostponed: true,
-                        scheduledTime: DateTime.now(),
+                        isPostponed: _filterValueData.contains('postpone')
+                            ? true
+                            : false,
+                        scheduledTime: _scheduleTime ?? DateTime.now(),
                         state: "inProgress",
                         title: _titleController.text,
                       );
@@ -309,6 +313,9 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                     setState(() {
                       if (selected) {
                         _filterValueData.add('personal');
+                        if (_filterValueData.contains('assign')) {
+                          _filterValueData.remove('assign');
+                        }
                       } else {
                         _filterValueData.remove('personal');
                       }
@@ -324,6 +331,9 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                     setState(() {
                       if (selected) {
                         _filterValueData.add('postpone');
+                        if (_filterValueData.contains('schedule')) {
+                          _filterValueData.remove('schedule');
+                        }
                       } else {
                         _filterValueData.remove('postpone');
                       }
@@ -339,6 +349,9 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                     setState(() {
                       if (selected) {
                         _filterValueData.add('assign');
+                        if (_filterValueData.contains('personal')) {
+                          _filterValueData.remove('personal');
+                        }
                       } else {
                         _filterValueData.remove('assign');
                       }
@@ -357,6 +370,9 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                     setState(() {
                       if (selected) {
                         _filterValueData.add('schedule');
+                        if (_filterValueData.contains('postpone')) {
+                          _filterValueData.remove('postpone');
+                        }
                       } else {
                         _filterValueData.remove('schedule');
                       }

@@ -23,6 +23,8 @@ class PersonalTaskScreen extends StatelessWidget {
             .collection('alltasks')
             .where('assignedto',
                 isEqualTo: Provider.of<AuthViewModel>(context).phoneNumber)
+            .where('createdBy',
+                isEqualTo: Provider.of<AuthViewModel>(context).phoneNumber)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

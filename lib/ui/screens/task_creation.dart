@@ -318,6 +318,11 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                         }
                       } else {
                         _filterValueData.remove('personal');
+
+                        if (!_filterValueData.contains('assign') &&
+                            !_filterValueData.contains('personal')) {
+                          _filterValueData.add('personal');
+                        }
                       }
                       // _selectedChip = selected ? 'personal' : null;
                     });
@@ -354,6 +359,12 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                         }
                       } else {
                         _filterValueData.remove('assign');
+
+                        _selectedContact = null;
+                        if (!_filterValueData.contains('assign') &&
+                            !_filterValueData.contains('personal')) {
+                          _filterValueData.add('personal');
+                        }
                       }
                       // _selectedChip = selected ? 'assign' : null;
                     });

@@ -30,9 +30,9 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
-
+  final Set<String> _filterValueData = <String>{};
   DateTime? _dueDate;
-  String? _selectedChip;
+  // String? _selectedChip;
   Contact? _selectedContact;
 
   @override
@@ -120,19 +120,19 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
     }
   }
 
-  void _onChipTap(String chipName) async {
-    print('Chip tapped: $chipName');
-    setState(() {
-      _selectedChip = chipName;
-    });
+  // void _onChipTap(String chipName) async {
+  //   print('Chip tapped: $chipName');
+  //   setState(() {
+  //     _selectedChip = chipName;
+  //   });
 
-    if (chipName == 'assign') {
-      print('Attempting to pick contact');
-      await _pickContact();
-    } else if (chipName == 'schedule') {
-      await _selectDate(context);
-    }
-  }
+  //   if (chipName == 'assign') {
+  //     print('Attempting to pick contact');
+  //     await _pickContact();
+  //   } else if (chipName == 'schedule') {
+  //     await _selectDate(context);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -225,7 +225,8 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                     return null;
                   },
                 ),
-                if (_selectedChip == 'schedule' && _dueDate != null) ...[
+                if (_filterValueData.contains('schedule') &&
+                    _dueDate != null) ...[
                   const SizedBox(height: 8),
                   GestureDetector(
                     onTap: () => _selectDate(context),
@@ -252,7 +253,8 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                     ),
                   ),
                 ],
-                if (_selectedChip == 'assign' && _selectedContact != null) ...[
+                if (_filterValueData.contains('assign') &&
+                    _selectedContact != null) ...[
                   const SizedBox(height: 8),
                   GestureDetector(
                     onTap: _pickContact,
@@ -296,28 +298,46 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
               children: [
                 FilterChip(
                   label: const Text('Personal'),
-                  selected: _selectedChip == 'personal',
+                  // selected: _selectedChip == 'personal',
+                  selected: _filterValueData.contains('personal'),
                   onSelected: (bool selected) {
                     setState(() {
-                      _selectedChip = selected ? 'personal' : null;
+                      if (selected) {
+                        _filterValueData.add('personal');
+                      } else {
+                        _filterValueData.remove('personal');
+                      }
+                      // _selectedChip = selected ? 'personal' : null;
                     });
                   },
                 ),
                 FilterChip(
                   label: const Text('Postpone'),
-                  selected: _selectedChip == 'postpone',
+                  // selected: _selectedChip == 'postpone',
+                  selected: _filterValueData.contains('postpone'),
                   onSelected: (bool selected) {
                     setState(() {
-                      _selectedChip = selected ? 'postpone' : null;
+                      if (selected) {
+                        _filterValueData.add('postpone');
+                      } else {
+                        _filterValueData.remove('postpone');
+                      }
+                      // _selectedChip = selected ? 'postpone' : null;
                     });
                   },
                 ),
                 FilterChip(
                   label: const Text('Assign to'),
-                  selected: _selectedChip == 'assign',
+                  // selected: _selectedChip == 'assign',
+                  selected: _filterValueData.contains('assign'),
                   onSelected: (bool selected) async {
                     setState(() {
-                      _selectedChip = selected ? 'assign' : null;
+                      if (selected) {
+                        _filterValueData.add('assign');
+                      } else {
+                        _filterValueData.remove('assign');
+                      }
+                      // _selectedChip = selected ? 'assign' : null;
                     });
                     if (selected) {
                       await _pickContact();
@@ -326,10 +346,16 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                 ),
                 FilterChip(
                   label: const Text('Schedule'),
-                  selected: _selectedChip == 'schedule',
+                  // selected: _selectedChip == 'schedule',
+                  selected: _filterValueData.contains('schedule'),
                   onSelected: (bool selected) {
                     setState(() {
-                      _selectedChip = selected ? 'schedule' : null;
+                      if (selected) {
+                        _filterValueData.add('schedule');
+                      } else {
+                        _filterValueData.remove('schedule');
+                      }
+                      // _selectedChip = selected ? 'schedule' : null;
                       if (selected) {
                         _selectDate(context);
                       }

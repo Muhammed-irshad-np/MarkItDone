@@ -6,9 +6,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class TaskCreationBottomSheet extends StatefulWidget {
-  const TaskCreationBottomSheet({super.key});
+  const TaskCreationBottomSheet({super.key, required this.phNumberController});
+  final String phNumberController;
 
-  static Future<Map<String, dynamic>?> show(BuildContext context) {
+  static Future<Map<String, dynamic>?> show(BuildContext context,
+      {required String phNumberController}) {
     return showModalBottomSheet<Map<String, dynamic>>(
       context: context,
       isScrollControlled: true,
@@ -16,7 +18,7 @@ class TaskCreationBottomSheet extends StatefulWidget {
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: const TaskCreationBottomSheet(),
+        child: TaskCreationBottomSheet(phNumberController: phNumberController),
       ),
     );
   }
@@ -30,8 +32,8 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final Set<String> _filterValueData = <String>{};
-  DateTime? _dueDate;
+  final Set<String> _filterValueData = <String>{'personal'};
+  DateTime? _scheduleTime;
   // String? _selectedChip;
   Contact? _selectedContact;
 
@@ -45,13 +47,13 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _dueDate ?? DateTime.now(),
+      initialDate: _scheduleTime ?? DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
     );
-    if (picked != null && picked != _dueDate) {
+    if (picked != null && picked != _scheduleTime) {
       setState(() {
-        _dueDate = picked;
+        _scheduleTime = picked;
       });
     }
   }
@@ -169,7 +171,7 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                     final task = {
                       'title': _titleController.text,
                       'description': _descriptionController.text,
-                      'dueDate': _dueDate,
+                      'dueDate': _scheduleTime,
                     };
                     try {
                       // Map<String, dynamic> task = {
@@ -186,8 +188,9 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                       // };
                       final finalvalue = await viewModel.addtask(
                         context,
-                        assignedTo: "",
-                        createdBy: "",
+                        assignedTo: _selectedContact!.phones[0].normalizedNumber
+                            .replaceFirst('+1', ''),
+                        createdBy: widget.phNumberController,
                         isPostponed: true,
                         scheduledTime: DateTime.now(),
                         state: "inProgress",
@@ -226,7 +229,7 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                   },
                 ),
                 if (_filterValueData.contains('schedule') &&
-                    _dueDate != null) ...[
+                    _scheduleTime != null) ...[
                   const SizedBox(height: 8),
                   GestureDetector(
                     onTap: () => _selectDate(context),
@@ -245,7 +248,7 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                           const Icon(Icons.calendar_today, size: 16),
                           const SizedBox(width: 8),
                           Text(
-                            '${_dueDate!.day}/${_dueDate!.month}/${_dueDate!.year}',
+                            '${_scheduleTime!.day}/${_scheduleTime!.month}/${_scheduleTime!.year}',
                             style: const TextStyle(fontSize: 14),
                           ),
                         ],
@@ -274,6 +277,8 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                           const SizedBox(width: 8),
                           Text(
                             _selectedContact!.displayName,
+                            // _selectedContact!.phones[0].normalizedNumber
+                            //     .replaceFirst('+1', ''),
                             style: const TextStyle(fontSize: 14),
                           ),
                         ],

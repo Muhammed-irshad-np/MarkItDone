@@ -5,6 +5,7 @@ import 'package:markitdone/data/repositories/user_repository.dart';
 class AuthViewModel extends ChangeNotifier {
   final UserRepository _userRepository;
   String _phoneNumber = '';
+
   String _verificationId = '';
   bool _isOTPSent = false;
   String? documentId = '';
@@ -17,6 +18,8 @@ class AuthViewModel extends ChangeNotifier {
     _phoneNumber = "+91$number";
     notifyListeners();
   }
+
+  String get phoneNumber => _phoneNumber;
 
   // Method to verify the phone number
   Future<void> verifyPhoneNumber() async {

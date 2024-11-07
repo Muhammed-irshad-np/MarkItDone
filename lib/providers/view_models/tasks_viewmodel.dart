@@ -26,6 +26,8 @@ class TasksViewmodel extends ChangeNotifier {
     return res;
   }
 
+  
+
   Future<void> deleteAllRows() async {
     try {
       QuerySnapshot querySnapshot =

@@ -25,6 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String phNumberController =
+        ModalRoute.of(context)!.settings.arguments.toString();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Task Manager'),
@@ -53,13 +55,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisSpacing: 16,
                 children: [
                   CategoryCard(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, '/personalTask');
+                    },
                     icon: Icons.person,
                     title: 'Personal',
                     color: Colors.blue,
                   ),
                   CategoryCard(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, '/assignedTask');
+                    },
                     icon: Icons.assignment_ind,
                     title: 'Assigned',
                     color: Colors.green,
@@ -103,7 +109,8 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           // Navigator.pushNamed(context, '/task');
-          TaskCreationBottomSheet.show(context);
+          TaskCreationBottomSheet.show(context,
+              phNumberController: phNumberController);
         },
         icon: const Icon(Icons.add),
         label: const Text('Add Task'),

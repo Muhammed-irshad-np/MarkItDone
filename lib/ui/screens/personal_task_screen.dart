@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
+import 'package:provider/provider.dart';
 
-class TaskListingScreen extends StatelessWidget {
-  const TaskListingScreen({Key? key}) : super(key: key);
+class PersonalTaskScreen extends StatelessWidget {
+  const PersonalTaskScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Created task '),
+        title: const Text('Personal task '),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -17,7 +19,11 @@ class TaskListingScreen extends StatelessWidget {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('alltasks').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('alltasks')
+            .where('assignedto',
+                isEqualTo: Provider.of<AuthViewModel>(context).phoneNumber)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

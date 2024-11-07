@@ -9,9 +9,12 @@ import 'package:markitdone/providers/view_models/tasks_viewmodel.dart';
 import 'package:markitdone/ui/screens/auth_screen.dart';
 import 'package:markitdone/ui/screens/created_task_screen.dart';
 import 'package:markitdone/ui/screens/homescreen.dart';
+import 'package:markitdone/ui/screens/personal_task_screen.dart';
 import 'package:markitdone/ui/screens/register_and_permission_screen.dart';
 import 'package:markitdone/ui/screens/task_creation.dart';
 import 'package:provider/provider.dart';
+
+import 'ui/screens/assigned_task_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +48,8 @@ class MyApp extends StatelessWidget {
           '/': (context) => AuthScreen(),
           '/register': (context) => const RegisterAndPermissionScreen(),
           '/createdTaskList': (context) => const TaskListingScreen(),
+          '/assignedTask': (context) => const AssignedTaskScreen(),
+          '/personalTask': (context) => const PersonalTaskScreen(),
           // '/task': (context) => const TaskCreationScreen(),
           '/home': (context) => const HomeScreen(),
         },

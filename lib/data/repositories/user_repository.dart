@@ -20,6 +20,7 @@ class UserRepository {
         'phoneNumber': mobileNumber,
         'isFirstTimeUser': true,
         'createdAt': FieldValue.serverTimestamp(),
+        'assignedTasks': []
       });
 
       // Return the new document ID
@@ -103,6 +104,7 @@ class UserRepository {
           'name': '', // Initial empty name; you can update it later
           'createdAt': FieldValue.serverTimestamp(),
           'isFirstTimeUser': true,
+          'assignedTasks': []
         });
       }
       // Optionally, you can update the user profile here if needed

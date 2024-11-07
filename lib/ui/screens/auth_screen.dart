@@ -9,7 +9,7 @@ class AuthScreen extends StatelessWidget {
     String otp = '';
 
     return Scaffold(
-      appBar: AppBar(title: Text('Login with Phone')),
+      appBar: AppBar(title: const Text('Login with Phone')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -20,8 +20,10 @@ class AuthScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextField(
+                    // controller: phNumberController,
                     onChanged: viewModel.setPhoneNumber,
-                    decoration: InputDecoration(labelText: 'Phone Number'),
+                    decoration:
+                        const InputDecoration(labelText: 'Phone Number'),
                     keyboardType: TextInputType.phone,
                   ),
                 ),
@@ -33,7 +35,8 @@ class AuthScreen extends StatelessWidget {
                     if (res['isFirstTimeUser']) {
                       Navigator.pushReplacementNamed(context, '/register');
                     } else {
-                      Navigator.pushReplacementNamed(context, '/home');
+                      Navigator.pushReplacementNamed(context, '/home',
+                          arguments: viewModel.phoneNumber);
                     }
                   },
                   child: Text('login'),

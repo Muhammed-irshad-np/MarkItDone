@@ -17,17 +17,37 @@ class AddTaskRepository {
   }) async {
     try {
       // ... existing validation ...
-
+      // final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+      final String assignedUser = assignedTo;
+      final String modifiedAssignedPhNumber = "+91$assignedUser";
+      String assignedToUserId;
+      if (assignedUser.isEmpty) {
+        return false;
+        // assignedToUserId = currentUserId;
+      } else {
+        final QuerySnapshot userSnapshot = await _firestore
+            .collection('users')
+            .where('phoneNumber', isEqualTo: modifiedAssignedPhNumber)
+            .get();
+        if (userSnapshot.docs.isNotEmpty) {
+          assignedToUserId = userSnapshot.docs.first.id;
+        } else {
+          return false;
+        }
+      }
       await _firestore.collection('alltasks').doc().set({
         // Updated collection name
         'title': title,
-        'assignedto': assignedTo,
+        'assignedto': modifiedAssignedPhNumber,
         'createdBy': createdBy,
         'scheduledTime': Timestamp.fromDate(scheduledTime),
         'state': state,
         'ispostponed': isPostponed,
         'createdDate': FieldValue.serverTimestamp(),
         'updatedat': FieldValue.serverTimestamp(),
+      });
+      await _firestore.collection('users').doc(assignedToUserId).update({
+        'assignedTasks': FieldValue.arrayUnion([title]),
       });
 
       return true;

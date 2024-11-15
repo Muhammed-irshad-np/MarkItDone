@@ -32,16 +32,38 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+      signingConfigs {
+        debug {
+            keyAlias 'myappalias'               // Replace with your alias
+            keyPassword 'Tiger@123'         // Replace with your keystore password
+            storeFile file('C:/Users/18203/Desktop/myapp-key.jks')  // Path to your .jks file
+            storePassword 'Tiger@123'       // Replace with your keystore password
+        }
+        release {
+            keyAlias 'myappalias'               // Replace with your alias
+            keyPassword 'Tiger@123'         // Replace with your keystore password
+            storeFile file('C:/Users/18203/Desktop/myapp-key.jks')  // Path to your .jks file
+            storePassword 'Tiger@123'       // Replace with your keystore password
+        }
+    }
 
     buildTypes {
+         debug {
+            signingConfig signingConfigs.debug
+        }
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // ... other dependencies
+    implementation 'com.google.android.play:integrity:1.3.0'
 }

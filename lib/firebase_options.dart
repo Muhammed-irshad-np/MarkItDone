@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
     appId: '1:1017096100184:android:e9ec15050488059124ad2d',
     messagingSenderId: '1017096100184',
     projectId: 'markitdone-54365',
-    storageBucket: 'markitdone-54365.appspot.com',
+    storageBucket: 'markitdone-54365.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -62,7 +62,8 @@ class DefaultFirebaseOptions {
     appId: '1:1017096100184:ios:2457ea4698b77d6124ad2d',
     messagingSenderId: '1017096100184',
     projectId: 'markitdone-54365',
-    storageBucket: 'markitdone-54365.appspot.com',
+    storageBucket: 'markitdone-54365.firebasestorage.app',
     iosBundleId: 'com.example.markitdone',
   );
+
 }

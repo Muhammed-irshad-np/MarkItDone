@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:intl/intl.dart';
+import 'package:markitdone/config/theme.dart';
 import 'package:markitdone/providers/view_models/tasks_viewmodel.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +14,10 @@ class TaskCreationBottomSheet extends StatefulWidget {
     return showModalBottomSheet<Map<String, dynamic>>(
       context: context,
       isScrollControlled: true,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (context) => Padding(
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -134,36 +140,79 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
     }
   }
 
+  Widget _buildChip({
+    required String label,
+    required String value,
+    required IconData icon,
+  }) {
+    final isSelected = _selectedChip == value;
+    return FilterChip(
+      label: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 16,
+            color: isSelected ? AppColors.textLight : AppColors.textPrimary,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: TextStyle(
+              color: isSelected ? AppColors.textLight : AppColors.textPrimary,
+            ),
+          ),
+        ],
+      ),
+      selected: isSelected,
+      onSelected: (bool selected) async {
+        _onChipTap(selected ? value : '');
+      },
+      backgroundColor: AppColors.surface,
+      selectedColor: AppColors.primary,
+      checkmarkColor: AppColors.textLight,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(
+          color: isSelected ? AppColors.primary : AppColors.cardBorder,
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<TasksViewmodel>(context);
 
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(24.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 40,
-            height: 4,
-            margin: const EdgeInsets.only(bottom: 20),
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              margin: const EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                color: AppColors.divider,
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
           ),
+          const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Add Task',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               IconButton(
                 icon: const Icon(Icons.check),
+                color: AppColors.primary,
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     final task = {
@@ -207,140 +256,103 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
           Form(
             key: _formKey,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextFormField(
                   controller: _titleController,
-                  decoration: const InputDecoration(
-                    hintText: 'Enter task',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    hintText: 'What needs to be done?',
+                    prefixIcon: Icon(
+                      Icons.check_circle_outline,
+                      color: AppColors.textSecondary,
+                    ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a task';
-                    }
-                    return null;
-                  },
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
-                if (_selectedChip == 'schedule' && _dueDate != null) ...[
-                  const SizedBox(height: 8),
-                  GestureDetector(
+                const SizedBox(height: 24),
+                Text(
+                  'Task Options',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 16),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _buildChip(
+                      label: 'Personal',
+                      value: 'personal',
+                      icon: Icons.person_outline,
+                    ),
+                    _buildChip(
+                      label: 'Schedule',
+                      value: 'schedule',
+                      icon: Icons.calendar_today_outlined,
+                    ),
+                    _buildChip(
+                      label: 'Assign',
+                      value: 'assign',
+                      icon: Icons.group_outlined,
+                    ),
+                    _buildChip(
+                      label: 'Postpone',
+                      value: 'postpone',
+                      icon: Icons.timer_outlined,
+                    ),
+                  ],
+                ),
+                if (_selectedChip == 'schedule' && _dueDate != null)
+                  _buildSelectedOption(
+                    icon: Icons.calendar_today_outlined,
+                    text: DateFormat('MMM d, y').format(_dueDate!),
                     onTap: () => _selectDate(context),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.calendar_today, size: 16),
-                          const SizedBox(width: 8),
-                          Text(
-                            '${_dueDate!.day}/${_dueDate!.month}/${_dueDate!.year}',
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
-                ],
-                if (_selectedChip == 'assign' && _selectedContact != null) ...[
-                  const SizedBox(height: 8),
-                  GestureDetector(
+                if (_selectedChip == 'assign' && _selectedContact != null)
+                  _buildSelectedOption(
+                    icon: Icons.person_outline,
+                    text: _selectedContact!.displayName,
                     onTap: _pickContact,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.person, size: 16),
-                          const SizedBox(width: 8),
-                          Text(
-                            _selectedContact!.displayName,
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
-                ],
               ],
             ),
           ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 120,
-            child: GridView.count(
-              crossAxisCount: 2,
-              childAspectRatio: 3,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-              padding: EdgeInsets.zero,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              children: [
-                FilterChip(
-                  label: const Text('Personal'),
-                  selected: _selectedChip == 'personal',
-                  onSelected: (bool selected) {
-                    setState(() {
-                      _selectedChip = selected ? 'personal' : null;
-                    });
-                  },
-                ),
-                FilterChip(
-                  label: const Text('Postpone'),
-                  selected: _selectedChip == 'postpone',
-                  onSelected: (bool selected) {
-                    setState(() {
-                      _selectedChip = selected ? 'postpone' : null;
-                    });
-                  },
-                ),
-                FilterChip(
-                  label: const Text('Assign to'),
-                  selected: _selectedChip == 'assign',
-                  onSelected: (bool selected) async {
-                    setState(() {
-                      _selectedChip = selected ? 'assign' : null;
-                    });
-                    if (selected) {
-                      await _pickContact();
-                    }
-                  },
-                ),
-                FilterChip(
-                  label: const Text('Schedule'),
-                  selected: _selectedChip == 'schedule',
-                  onSelected: (bool selected) {
-                    setState(() {
-                      _selectedChip = selected ? 'schedule' : null;
-                      if (selected) {
-                        _selectDate(context);
-                      }
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSelectedOption({
+    required IconData icon,
+    required String text,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: AppColors.inputFill,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 16, color: AppColors.primary),
+              const SizedBox(width: 8),
+              Text(
+                text,
+                style: TextStyle(color: AppColors.textPrimary),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

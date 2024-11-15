@@ -12,6 +12,7 @@ import 'package:markitdone/ui/screens/homescreen.dart';
 import 'package:markitdone/ui/screens/register_and_permission_screen.dart';
 import 'package:markitdone/ui/screens/task_creation.dart';
 import 'package:provider/provider.dart';
+import 'package:markitdone/config/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,11 +44,9 @@ class MyApp extends StatelessWidget {
             create: (context) => TasksViewmodel(AddTaskRepository()))
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
+        title: 'MarkItDone',
+        theme: appTheme(),
+        debugShowCheckedModeBanner: false,
         initialRoute: '/',
         routes: {
           '/': (context) => AuthScreen(),

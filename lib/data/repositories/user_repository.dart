@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -28,22 +26,15 @@ class UserRepository {
     } else {
       // User exists, get their isFirstTimeUser status and document ID
       DocumentSnapshot userDoc = userQuery.docs.first;
-      return {
-        'isFirstTimeUser': userDoc.get('isFirstTimeUser') ?? false,
-        'documentId': userDoc.id
-      };
+      return {'isFirstTimeUser': false, 'documentId': userDoc.id};
     }
   }
 
   Future<bool> updateUserNameAndStatus(String name, String documentId) async {
-    await _firestore.collection('users').doc(documentId).update({
-      'name': name,
-      'isFirstTimeUser': false,
-    });
     try {
       await _firestore.collection('users').doc(documentId).update({
         'name': name,
-        'isFirstTimeUser': false,
+        'isFrstTimeUser': false,
       });
       return true;
     } catch (e) {
@@ -99,10 +90,11 @@ class UserRepository {
       if (!userDoc.exists) {
         // Create new user document in Firestore
         await _firestore.collection('users').doc(user.uid).set({
+          'uid': user.uid,
           'phoneNumber': user.phoneNumber,
           'name': '', // Initial empty name; you can update it later
-          'createdAt': FieldValue.serverTimestamp(),
-          'isFirstTimeUser': true,
+          'registeredDate': FieldValue.serverTimestamp(),
+          'isFrstTimeUser': true,
         });
       }
       // Optionally, you can update the user profile here if needed

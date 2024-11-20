@@ -73,126 +73,74 @@ class _HomeScreenState extends State<HomeScreen>
                       Icons.notifications_outlined,
                       color: _colorAnimation.value,
                     ),
-                    if (_isAnimating)
-                      Positioned.fill(
-                        child: CustomPaint(
-                          painter: SparklesPainter(
-                            progress: _notificationController.value,
-                            color: Colors.red,
-                          ),
-                        ),
-                      ),
                   ],
                 );
               },
             ),
-            onPressed: _handleNotificationTap,
-            color: AppColors.textPrimary,
-          ),
-          IconButton(
-            icon: const Icon(Icons.person_outline),
             onPressed: () {},
-            color: AppColors.textPrimary,
           ),
         ],
       ),
-      body: SafeArea(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Welcome back!',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                  ),
-                  const SizedBox(height: 24),
-                  // Search Field
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search tasks...',
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: AppColors.textSecondary,
-                      ),
-                      filled: true,
-                      fillColor: AppColors.surface,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            Text(
+              'Categories',
+              style: Theme.of(context).textTheme.titleLarge,
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Categories',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 16),
-                    Expanded(
-                      child: GridView.count(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 16,
-                        crossAxisSpacing: 16,
-                        children: [
-                          _buildCategoryCard(
-                            context,
-                            icon: Icons.person,
-                            title: 'Personal',
-                            subtitle: '5 tasks',
-                            color: AppColors.primary,
-                            onTap: () {},
-                          ),
-                          _buildCategoryCard(
-                            context,
-                            icon: Icons.assignment_ind,
-                            title: 'Assigned',
-                            subtitle: '3 tasks',
-                            color: AppColors.secondary,
-                            onTap: () {},
-                          ),
-                          _buildCategoryCard(
-                            context,
-                            icon: Icons.calendar_today,
-                            title: 'Scheduled',
-                            subtitle: '8 tasks',
-                            color: AppColors.pending,
-                            onTap: () {},
-                          ),
-                          _buildCategoryCard(
-                            context,
-                            icon: Icons.check_circle,
-                            title: 'Completed',
-                            subtitle: '12 tasks',
-                            color: AppColors.completed,
-                            onTap: () {},
-                          ),
-                        ],
-                      ),
-                    ),
-                    _buildUserTasksCard(context),
-                    const SizedBox(height: 16),
-                  ],
+            const SizedBox(height: 16),
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
+              children: [
+                _buildCategoryCard(
+                  context,
+                  icon: Icons.person,
+                  title: 'Personal',
+                  subtitle: '5 tasks',
+                  color: AppColors.primary,
+                  onTap: () {},
                 ),
-              ),
+                _buildCategoryCard(
+                  context,
+                  icon: Icons.assignment_ind,
+                  title: 'Assigned',
+                  subtitle: '3 tasks',
+                  color: AppColors.secondary,
+                  onTap: () {},
+                ),
+                _buildCategoryCard(
+                  context,
+                  icon: Icons.calendar_today,
+                  title: 'Scheduled',
+                  subtitle: '8 tasks',
+                  color: AppColors.pending,
+                  onTap: () {},
+                ),
+                _buildCategoryCard(
+                  context,
+                  icon: Icons.check_circle,
+                  title: 'Completed',
+                  subtitle: '12 tasks',
+                  color: AppColors.completed,
+                  onTap: () {
+                    
+                  },
+                ),
+              ],
             ),
+            const SizedBox(height: 24),
+            Text(
+              'Your Tasks',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 16),
+            _buildUserTasksCard(context),
           ],
         ),
       ),

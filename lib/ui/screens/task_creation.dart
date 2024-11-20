@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:intl/intl.dart';
 import 'package:markitdone/config/theme.dart';
+import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
 import 'package:markitdone/providers/view_models/tasks_viewmodel.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -40,6 +41,12 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
   DateTime? _dueDate;
   String? _selectedChip;
   Contact? _selectedContact;
+
+  @override
+  void initState() {
+    super.initState();
+    // If you need to perform any additional initialization
+  }
 
   @override
   void dispose() {
@@ -127,13 +134,12 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
   }
 
   void _onChipTap(String chipName) async {
-    print('Chip tapped: $chipName');
     setState(() {
-      _selectedChip = chipName;
+      // Toggle chip selection
+      _selectedChip = _selectedChip == chipName ? null : chipName;
     });
 
     if (chipName == 'assign') {
-      print('Attempting to pick contact');
       await _pickContact();
     } else if (chipName == 'schedule') {
       await _selectDate(context);
@@ -165,9 +171,7 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
         ],
       ),
       selected: isSelected,
-      onSelected: (bool selected) async {
-        _onChipTap(selected ? value : '');
-      },
+      onSelected: (bool selected) => _onChipTap(value),
       backgroundColor: AppColors.surface,
       selectedColor: AppColors.primary,
       checkmarkColor: AppColors.textLight,
@@ -179,6 +183,39 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
     );
+  }
+
+  String? _validateTitle(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Title is required';
+    }
+    if (value.length > 100) {
+      return 'Title must be less than 100 characters';
+    }
+    return null;
+  }
+
+  bool _validateTask() {
+    if (!_formKey.currentState!.validate()) {
+      return false;
+    }
+
+    if (_selectedChip == 'assign' && _selectedContact == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Please select a contact to assign the task')),
+      );
+      return false;
+    }
+
+    if (_selectedChip == 'schedule' && _dueDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a due date for the task')),
+      );
+      return false;
+    }
+
+    return true;
   }
 
   @override
@@ -214,42 +251,51 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                 icon: const Icon(Icons.check),
                 color: AppColors.primary,
                 onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    final task = {
-                      'title': _titleController.text,
-                      'description': _descriptionController.text,
-                      'dueDate': _dueDate,
-                    };
+                  if (_validateTask()) {
                     try {
-                      // Map<String, dynamic> task = {
-                      //   // Updated collection name
-                      //   'title': _titleController.text,
-                      //   'assignedTo': "",
-                      //   'createdBy': "",
-                      //   'scheduledTime':
-                      //       Timestamp.fromDate(_dueDate ?? DateTime.now()),
-                      //   'state': "inProgress",
-                      //   'isPostponed': true,
-                      //   'createdAt': FieldValue.serverTimestamp(),
-                      //   'updatedAt': FieldValue.serverTimestamp(),
-                      // };
+                      final authViewModel =
+                          Provider.of<AuthViewModel>(context, listen: false);
+                      final userPhone = authViewModel.phoneNumber;
+
+                      // Determine assignedTo based on selected option
+                      String assignedTo;
+                      if (_selectedChip == 'personal') {
+                        // For personal tasks, assignedTo is the same as createdBy
+                        assignedTo = userPhone;
+                      } else if (_selectedChip == 'assign' &&
+                          _selectedContact != null) {
+                        // For assigned tasks, use the selected contact's ID
+                        assignedTo = _selectedContact!.id;
+                      } else {
+                        // Default to user's phone number if no specific assignment
+                        assignedTo = userPhone;
+                      }
+
                       final finalvalue = await viewModel.addtask(
                         context,
-                        assignedTo: "",
-                        createdBy: "",
-                        isPostponed: true,
-                        scheduledTime: DateTime.now(),
+                        assignedTo: assignedTo,
+                        createdBy:
+                            userPhone, // Always set to the current user's phone
+                        isPostponed: _selectedChip == 'postpone',
+                        scheduledTime: _dueDate ?? DateTime.now(),
                         state: "inProgress",
-                        title: _titleController.text,
+                        title: _titleController.text.trim(),
                       );
+
                       if (finalvalue) {
-                        Navigator.pop(context, task);
+                        Navigator.pop(context, {
+                          'title': _titleController.text.trim(),
+                          'description': _descriptionController.text.trim(),
+                          'dueDate': _dueDate,
+                          'assignedTo': assignedTo,
+                          'createdBy': userPhone,
+                          'isPostponed': _selectedChip == 'postpone',
+                        });
                       }
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Error adding task: $e')),
                       );
-                      return;
                     }
                   }
                 },
@@ -264,6 +310,7 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
               children: [
                 TextFormField(
                   controller: _titleController,
+                  validator: _validateTitle,
                   decoration: InputDecoration(
                     hintText: 'What needs to be done?',
                     prefixIcon: Icon(
@@ -275,7 +322,7 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'Task Options',
+                  'Task Options (Optional)',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 16),
@@ -283,11 +330,6 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    _buildChip(
-                      label: 'Personal',
-                      value: 'personal',
-                      icon: Icons.person_outline,
-                    ),
                     _buildChip(
                       label: 'Schedule',
                       value: 'schedule',
@@ -297,11 +339,6 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                       label: 'Assign',
                       value: 'assign',
                       icon: Icons.group_outlined,
-                    ),
-                    _buildChip(
-                      label: 'Postpone',
-                      value: 'postpone',
-                      icon: Icons.timer_outlined,
                     ),
                   ],
                 ),

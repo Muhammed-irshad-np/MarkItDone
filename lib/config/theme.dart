@@ -3,42 +3,42 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
   // Brand Colors
-  static const primary = Color(0xFF7C3AED); // Vibrant Purple
-  static const secondary = Color(0xFF06B6D4); // Cyan
-  static const background = Color(0xFFFAFAFF); // Slight Purple tint
-  static const surface = Color(0xFFFFFFFF);
-  static const error = Color(0xFFDC2626); // Bright Red
+  static const primary = Color(0xFF6C5CE7); // Modern Purple
+  static const secondary = Color(0xFF00D2D3); // Bright Cyan
+  static const background = Color(0xFF1A1B1E); // Dark Background
+  static const surface = Color(0xFF2D2D34); // Card Background
+  static const error = Color(0xFFFF6B6B); // Soft Red
 
   // Task Status Colors
-  static const pending = Color(0xFFF59E0B); // Warm Amber
-  static const inProgress = Color(0xFF2563EB); // Royal Blue
-  static const completed = Color(0xFF059669); // Deep Emerald
-  static const postponed = Color(0xFFE11D48); // Rose Red
+  static const pending = Color(0xFFFFA502); // Warm Orange
+  static const inProgress = Color(0xFF45AAF2); // Bright Blue
+  static const completed = Color(0xFF2ECC71); // Fresh Green
+  static const postponed = Color(0xFFFF7675); // Coral Red
 
   // Text Colors
-  static const textPrimary = Color(0xFF1E1B4B); // Deep Indigo
-  static const textSecondary = Color(0xFF6B7280); // Cool Gray
-  static const textLight = Color(0xFFFFFFFF);
+  static const textPrimary = Color(0xFFF5F6FA); // Almost White
+  static const textSecondary = Color(0xFFA4A5A7); // Muted Gray
+  static const textLight = Color(0xFFFFFFFF); // Pure White
 
   // Additional Colors
-  static const cardBorder = Color(0xFFE2E8F0);
-  static const divider = Color(0xFFE2E8F0);
-  static const inputFill = Color(0xFFF8FAFC);
+  static const cardBorder = Color(0xFF3F3F46); // Dark Border
+  static const divider = Color(0xFF3F3F46); // Dark Divider
+  static const inputFill = Color(0xFF2A2A30); // Input Background
 
   // New Accent Colors
-  static const accent1 = Color(0xFFEC4899); // Pink
-  static const accent2 = Color(0xFF8B5CF6); // Purple
-  static const accent3 = Color(0xFF0EA5E9); // Light Blue
-  static const accent4 = Color(0xFF10B981); // Teal
+  static const accent1 = Color(0xFFFF79C6); // Neon Pink
+  static const accent2 = Color(0xFF9B59B6); // Deep Purple
+  static const accent3 = Color(0xFF0ABDE3); // Electric Blue
+  static const accent4 = Color(0xFF00B894); // Mint
 }
 
 ThemeData appTheme() {
-  return ThemeData(
+  return ThemeData.dark().copyWith(
     primaryColor: AppColors.primary,
     scaffoldBackgroundColor: AppColors.background,
 
     // Color Scheme
-    colorScheme: ColorScheme.light(
+    colorScheme: ColorScheme.dark(
       primary: AppColors.primary,
       secondary: AppColors.secondary,
       error: AppColors.error,
@@ -153,7 +153,7 @@ ThemeData appTheme() {
     // Chips
     chipTheme: ChipThemeData(
       backgroundColor: AppColors.inputFill,
-      selectedColor: AppColors.primary.withOpacity(0.1),
+      selectedColor: AppColors.primary.withOpacity(0.2),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       labelStyle: GoogleFonts.inter(
         fontSize: 14,

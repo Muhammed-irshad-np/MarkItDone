@@ -4,7 +4,7 @@ import 'package:markitdone/data/repositories/user_repository.dart';
 
 class AuthViewModel extends ChangeNotifier {
   final UserRepository _userRepository;
-  String _phoneNumber = '';
+  String phoneNumber = '';
   String _verificationId = '';
   bool _isOTPSent = false;
   String? documentId = '';
@@ -14,13 +14,13 @@ class AuthViewModel extends ChangeNotifier {
   AuthViewModel(this._userRepository);
 
   void setPhoneNumber(String number) {
-    _phoneNumber = "+91$number";
+    phoneNumber = "+91$number";
     notifyListeners();
   }
 
   // Method to verify the phone number
   Future<void> verifyPhoneNumber() async {
-    await _userRepository.sendOTP(_phoneNumber, (String verificationId) {
+    await _userRepository.sendOTP(phoneNumber, (String verificationId) {
       _verificationId =
           verificationId; // Store the verification ID for later use
       _isOTPSent = true; // OTP has been sent successfully
@@ -34,7 +34,7 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> registerorloginuser(BuildContext context) async {
-    if (_phoneNumber.isEmpty) {
+    if (phoneNumber.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please enter a phone number'),
@@ -44,7 +44,7 @@ class AuthViewModel extends ChangeNotifier {
       return {'isFirstTimeUser': false, 'documentId': null};
     }
 
-    final res = await _userRepository.registerorloginuser(_phoneNumber);
+    final res = await _userRepository.registerorloginuser(phoneNumber);
     documentId = res['documentId'] ?? "";
     notifyListeners();
     return res;

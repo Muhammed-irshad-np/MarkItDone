@@ -111,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen>
                   icon: Icons.assignment_ind,
                   title: 'Assigned',
                   subtitle: '3 tasks',
-                  color: AppColors.secondary,
+                  color: AppColors.secondary,   
                   onTap: () {},
                 ),
                 _buildCategoryCard(
@@ -128,9 +128,7 @@ class _HomeScreenState extends State<HomeScreen>
                   title: 'Completed',
                   subtitle: '12 tasks',
                   color: AppColors.completed,
-                  onTap: () {
-                    
-                  },
+                  onTap: () {},
                 ),
               ],
             ),

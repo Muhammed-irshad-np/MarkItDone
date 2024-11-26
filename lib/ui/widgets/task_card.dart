@@ -9,6 +9,7 @@ class TaskCard extends StatelessWidget {
   final String status;
   final VoidCallback? onTap;
   final VoidCallback? onStatusChange;
+  final VoidCallback? onReassign;
 
   const TaskCard({
     Key? key,
@@ -18,6 +19,7 @@ class TaskCard extends StatelessWidget {
     required this.status,
     this.onTap,
     this.onStatusChange,
+    this.onReassign,
   }) : super(key: key);
 
   Color _getStatusColor() {
@@ -59,6 +61,12 @@ class TaskCard extends StatelessWidget {
             children: [
               Row(
                 children: [
+                  Checkbox(
+                    value: status == 'completed',
+                    onChanged: (bool? value) {
+                      if (onStatusChange != null) onStatusChange!();
+                    },
+                  ),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +87,10 @@ class TaskCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  _buildPopupMenu(context),
+                  IconButton(
+                    icon: Icon(Icons.person_outline, color: AppColors.textSecondary),
+                    onPressed: onReassign,
+                  ),
                 ],
               ),
               const SizedBox(height: 12),
@@ -95,49 +106,6 @@ class TaskCard extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildPopupMenu(BuildContext context) {
-    return Theme(
-      data: Theme.of(context).copyWith(
-        popupMenuTheme: PopupMenuThemeData(
-          elevation: 3,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-      child: PopupMenuButton<String>(
-        icon: Icon(
-          Icons.more_vert,
-          color: AppColors.textSecondary,
-        ),
-        onSelected: (value) {
-          // Handle menu item selection
-        },
-        itemBuilder: (context) => [
-          _buildPopupMenuItem('edit', Icons.edit_outlined, 'Edit'),
-          _buildPopupMenuItem('delete', Icons.delete_outline, 'Delete'),
-        ],
-      ),
-    );
-  }
-
-  PopupMenuItem<String> _buildPopupMenuItem(
-      String value, IconData icon, String text) {
-    return PopupMenuItem(
-      value: value,
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: AppColors.textPrimary),
-          const SizedBox(width: 12),
-          Text(
-            text,
-            style: const TextStyle(fontSize: 14),
-          ),
-        ],
       ),
     );
   }

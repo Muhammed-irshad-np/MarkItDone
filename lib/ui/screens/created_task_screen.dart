@@ -24,128 +24,75 @@ class TaskListingScreen extends StatelessWidget {
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            color: AppColors.textPrimary,
+          TextButton(
             onPressed: () {
-              // TODO: Implement filtering
+              // Handle done action
             },
+            child: Text(
+              'Done',
+              style: TextStyle(color: AppColors.primary),
+            ),
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search tasks...',
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: AppColors.textSecondary,
-                ),
-                filled: true,
-                fillColor: AppColors.surface,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('alltasks').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: AppColors.primary,
               ),
-            ),
-          ),
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream:
-                  FirebaseFirestore.instance.collection('alltasks').snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.primary,
+            );
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                'Something went wrong',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: AppColors.error,
                     ),
-                  );
-                }
+              ),
+            );
+          }
 
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          size: 48,
-                          color: AppColors.error,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Something went wrong',
-                          style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    color: AppColors.error,
-                                  ),
-                        ),
-                      ],
+          final tasks = snapshot.data?.docs ?? [];
+
+          if (tasks.isEmpty) {
+            return Center(
+              child: Text(
+                'No tasks yet',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: AppColors.textSecondary,
                     ),
-                  );
-                }
+              ),
+            );
+          }
 
-                final tasks = snapshot.data?.docs ?? [];
-
-                if (tasks.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.task_outlined,
-                          size: 48,
-                          color: AppColors.textSecondary,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'No tasks yet',
-                          style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    color: AppColors.textSecondary,
-                                  ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Create a new task to get started',
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: AppColors.textSecondary,
-                                  ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                return ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: tasks.length,
-                  itemBuilder: (context, index) {
-                    final task = tasks[index].data() as Map<String, dynamic>;
-                    return TaskCard(
-                      title: task['title'] ?? 'Untitled Task',
-                      description: task['description'] ?? '',
-                      status: task['state'] ?? 'pending',
-                      dueDate: task['scheduledTime']?.toDate(),
-                      onTap: () {
-                        // TODO: Implement task details view
-                      },
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => TaskCreationBottomSheet.show(context),
-        child: const Icon(Icons.add),
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: tasks.length,
+            itemBuilder: (context, index) {
+              final task = tasks[index].data() as Map<String, dynamic>;
+              return TaskCard(
+                title: task['title'] ?? 'Untitled Task',
+                description: task['description'] ?? '',
+                status: task['state'] ?? 'pending',
+                dueDate: task['scheduledTime']?.toDate(),
+                onTap: () {
+                  // Handle task tap
+                },
+                onStatusChange: () {
+                  // Handle status change
+                },
+                onReassign: () {
+                  // Handle reassign action
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }

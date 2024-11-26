@@ -46,6 +46,8 @@ class TaskCard extends StatelessWidget {
         side: const BorderSide(color: AppColors.cardBorder),
       ),
       child: InkWell(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
         child: Container(

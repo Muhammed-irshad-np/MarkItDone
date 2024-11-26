@@ -277,6 +277,7 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                             userPhone, // Always set to the current user's phone
                         isPostponed: _selectedChip == 'postpone',
                         scheduledTime: _dueDate ?? DateTime.now(),
+                        isScheduled: _selectedChip == 'schedule',
                         state: "inProgress",
                         title: _titleController.text.trim(),
                       );

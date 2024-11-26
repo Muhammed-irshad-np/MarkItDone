@@ -13,6 +13,7 @@ class TasksViewmodel extends ChangeNotifier {
       required DateTime scheduledTime,
       required String title,
       required bool isPostponed,
+      required bool isScheduled,
       required String state}) async {
     final res = await _addTaskRepository.addTask(
       assignedTo: assignedTo,
@@ -21,6 +22,7 @@ class TasksViewmodel extends ChangeNotifier {
       title: title,
       isPostponed: isPostponed,
       state: state,
+      isScheduled: isScheduled,
     );
     print("logggg $res");
     return res;

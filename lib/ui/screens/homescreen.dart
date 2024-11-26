@@ -114,7 +114,9 @@ class _HomeScreenState extends State<HomeScreen>
                   title: 'Assigned',
                   subtitle: '3 tasks',
                   color: AppColors.secondary,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, '/assignedTaskList');
+                  },
                 ),
                 _buildCategoryCard(
                   context,

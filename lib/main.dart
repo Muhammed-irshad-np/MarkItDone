@@ -13,6 +13,8 @@ import 'package:markitdone/ui/screens/register_and_permission_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:markitdone/config/theme.dart';
 
+import 'ui/screens/assigned_task_screen.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _initializeFirebase();
@@ -53,6 +55,7 @@ class MyApp extends StatelessWidget {
           '/createdTaskList': (context) => const TaskListingScreen(),
           '/completedTaskList': (context) => const CompletedTaskScreen(),
           '/personalTaskList': (context) => const PersonalTaskScreen(),
+          '/assignedTaskList': (context) => const AssignedTaskScreen(),
           // '/task': (context) => const TaskCreationScreen(),
           '/home': (context) => const HomeScreen(),
         },

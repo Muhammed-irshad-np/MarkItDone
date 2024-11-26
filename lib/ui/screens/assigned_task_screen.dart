@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:markitdone/config/theme.dart';
 import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
 import 'package:markitdone/ui/widgets/task_card.dart';
 import 'package:provider/provider.dart';
 
-class PersonalTaskScreen extends StatelessWidget {
-  const PersonalTaskScreen({super.key});
+class AssignedTaskScreen extends StatelessWidget {
+  const AssignedTaskScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +23,27 @@ class PersonalTaskScreen extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Personal Tasks',
+          'Assigned Tasks',
           style: Theme.of(context).textTheme.headlineMedium,
         ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              // Handle done action
+            },
+            child: const Text(
+              'Done',
+              style: TextStyle(color: AppColors.primary),
+            ),
+          ),
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: getTasks(userPhone),
+        stream: FirebaseFirestore.instance
+            .collection('alltasks')
+            .where('assignedto', isNotEqualTo: userPhone)
+            .where('state', isNotEqualTo: 'completed')
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -40,7 +54,6 @@ class PersonalTaskScreen extends StatelessWidget {
           }
 
           if (snapshot.hasError) {
-            print('Error: ${snapshot.error}');
             return Center(
               child: Text(
                 'Something went wrong',
@@ -52,12 +65,8 @@ class PersonalTaskScreen extends StatelessWidget {
           }
 
           final tasks = snapshot.data?.docs ?? [];
-          final filteredTasks = tasks.where((task) {
-            final data = task.data() as Map<String, dynamic>;
-            return data['state'] != 'completed';
-          }).toList();
 
-          if (filteredTasks.isEmpty) {
+          if (tasks.isEmpty) {
             return Center(
               child: Text(
                 'No tasks yet',
@@ -70,23 +79,26 @@ class PersonalTaskScreen extends StatelessWidget {
 
           return ListView.builder(
             padding: const EdgeInsets.all(16),
-            itemCount: filteredTasks.length,
+            itemCount: tasks.length,
             itemBuilder: (context, index) {
-              final task = filteredTasks[index].data() as Map<String, dynamic>;
+              final task = tasks[index].data() as Map<String, dynamic>;
               return TaskCard(
-                fromCompleted: false,
                 title: task['title'] ?? 'Untitled Task',
                 description: task['description'] ?? '',
                 status: task['state'] ?? 'pending',
                 dueDate: task['scheduledTime']?.toDate(),
-                onStatusChange: () {
-                  FirebaseFirestore.instance
-                      .collection('alltasks')
-                      .doc(filteredTasks[index].id)
-                      .update({'state': 'completed'});
-                },
                 onTap: () {
                   // Handle task tap
+                },
+                onStatusChange: () {
+                  // Update task status in Firestore
+                  FirebaseFirestore.instance
+                      .collection('alltasks')
+                      .doc(tasks[index].id)
+                      .update({'state': 'completed'});
+                },
+                onReassign: () {
+                  // Handle reassign action
                 },
               );
             },
@@ -95,12 +107,4 @@ class PersonalTaskScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-Stream<QuerySnapshot> getTasks(String userPhone) {
-  return FirebaseFirestore.instance
-      .collection('alltasks')
-      .where('createdBy', isEqualTo: userPhone)
-      .where('assignedto', isEqualTo: userPhone)
-      .snapshots();
 }

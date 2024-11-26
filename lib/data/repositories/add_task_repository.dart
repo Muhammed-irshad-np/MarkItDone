@@ -14,6 +14,7 @@ class AddTaskRepository {
     String state = 'inprogress',
     bool isPostponed = false,
     required String createdBy,
+    required bool isScheduled,
   }) async {
     try {
       // ... existing validation ...
@@ -28,6 +29,7 @@ class AddTaskRepository {
         'ispostponed': isPostponed,
         'createdDate': FieldValue.serverTimestamp(),
         'updatedat': FieldValue.serverTimestamp(),
+        'isScheduled': isScheduled
       });
 
       return true;

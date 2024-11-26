@@ -41,8 +41,7 @@ class AssignedTaskScreen extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('alltasks')
-            .where('assignedto', isNotEqualTo: userPhone)
-            .where('state', isNotEqualTo: 'completed')
+            .where('createdBy', isEqualTo: userPhone)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -65,8 +64,13 @@ class AssignedTaskScreen extends StatelessWidget {
           }
 
           final tasks = snapshot.data?.docs ?? [];
+          final filteredTasks = tasks.where((task) {
+            final data = task.data() as Map<String, dynamic>;
+            return data['state'] != 'completed' &&
+                data['assignedto'] == userPhone;
+          }).toList();
 
-          if (tasks.isEmpty) {
+          if (filteredTasks.isEmpty) {
             return Center(
               child: Text(
                 'No tasks yet',
@@ -79,9 +83,9 @@ class AssignedTaskScreen extends StatelessWidget {
 
           return ListView.builder(
             padding: const EdgeInsets.all(16),
-            itemCount: tasks.length,
+            itemCount: filteredTasks.length,
             itemBuilder: (context, index) {
-              final task = tasks[index].data() as Map<String, dynamic>;
+              final task = filteredTasks[index].data() as Map<String, dynamic>;
               return TaskCard(
                 title: task['title'] ?? 'Untitled Task',
                 description: task['description'] ?? '',
@@ -94,7 +98,7 @@ class AssignedTaskScreen extends StatelessWidget {
                   // Update task status in Firestore
                   FirebaseFirestore.instance
                       .collection('alltasks')
-                      .doc(tasks[index].id)
+                      .doc(filteredTasks[index].id)
                       .update({'state': 'completed'});
                 },
                 onReassign: () {

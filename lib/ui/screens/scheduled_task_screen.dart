@@ -5,8 +5,8 @@ import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
 import 'package:markitdone/ui/widgets/task_card.dart';
 import 'package:provider/provider.dart';
 
-class AssignedTaskScreen extends StatelessWidget {
-  const AssignedTaskScreen({Key? key}) : super(key: key);
+class ScheduledTaskScreen extends StatelessWidget {
+  const ScheduledTaskScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class AssignedTaskScreen extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('alltasks')
-            .where('assignedto', isNotEqualTo: userPhone)
+            .where('isScheduled', isEqualTo: true)
             .where('state', isNotEqualTo: 'completed')
             .snapshots(),
         builder: (context, snapshot) {

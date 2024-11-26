@@ -36,13 +36,13 @@ android {
         debug {
             keyAlias 'myappalias'               // Replace with your alias
             keyPassword 'Tiger@123'         // Replace with your keystore password
-            storeFile file('C:/Users/18889/Desktop/myapp-key.jks')  // Path to your .jks file
+            storeFile file('../myapp-key.jks')  // Path to your .jks file
             storePassword 'Tiger@123'       // Replace with your keystore password
         }
         release {
             keyAlias 'myappalias'               // Replace with your alias
             keyPassword 'Tiger@123'         // Replace with your keystore password
-            storeFile file('C:/Users/18889/Desktop/myapp-key.jks')  // Path to your .jks file
+            storeFile file('../myapp-key.jks')  // Path to your .jks file
             storePassword 'Tiger@123'       // Replace with your keystore password
         }
     }

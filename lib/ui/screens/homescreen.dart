@@ -124,7 +124,9 @@ class _HomeScreenState extends State<HomeScreen>
                   title: 'Scheduled',
                   subtitle: '8 tasks',
                   color: AppColors.pending,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, '/scheduledTaskList');
+                  },
                 ),
                 _buildCategoryCard(
                   context,
@@ -180,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen>
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: AppColors.cardBorder),
+        side: const BorderSide(color: AppColors.cardBorder),
       ),
       child: InkWell(
         onTap: () => Navigator.pushNamed(context, '/createdTaskList'),
@@ -195,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen>
                   color: AppColors.primary.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.person,
                   color: AppColors.primary,
                 ),
@@ -216,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen>
                   ],
                 ),
               ),
-              Icon(
+              const Icon(
                 Icons.chevron_right,
                 color: AppColors.textSecondary,
               ),

@@ -104,14 +104,16 @@ class _HomeScreenState extends State<HomeScreen>
                   title: 'Personal',
                   subtitle: '5 tasks',
                   color: AppColors.primary,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, '/personalTaskList');
+                  },
                 ),
                 _buildCategoryCard(
                   context,
                   icon: Icons.assignment_ind,
                   title: 'Assigned',
                   subtitle: '3 tasks',
-                  color: AppColors.secondary,   
+                  color: AppColors.secondary,
                   onTap: () {},
                 ),
                 _buildCategoryCard(
@@ -128,7 +130,9 @@ class _HomeScreenState extends State<HomeScreen>
                   title: 'Completed',
                   subtitle: '12 tasks',
                   color: AppColors.completed,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, '/completedTaskList');
+                  },
                 ),
               ],
             ),

@@ -1,16 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:markitdone/data/repositories/add_task_repository.dart';
 import 'package:markitdone/data/repositories/user_repository.dart';
-import 'package:markitdone/firebase_options.dart';
 import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
 import 'package:markitdone/providers/view_models/tasks_viewmodel.dart';
 import 'package:markitdone/ui/screens/auth_screen.dart';
+import 'package:markitdone/ui/screens/comleted_task_screen.dart';
 import 'package:markitdone/ui/screens/created_task_screen.dart';
 import 'package:markitdone/ui/screens/homescreen.dart';
+import 'package:markitdone/ui/screens/personal_task_screen.dart';
 import 'package:markitdone/ui/screens/register_and_permission_screen.dart';
-import 'package:markitdone/ui/screens/task_creation.dart';
 import 'package:provider/provider.dart';
 import 'package:markitdone/config/theme.dart';
 
@@ -52,6 +51,8 @@ class MyApp extends StatelessWidget {
           '/': (context) => AuthScreen(),
           '/register': (context) => const RegisterAndPermissionScreen(),
           '/createdTaskList': (context) => const TaskListingScreen(),
+          '/completedTaskList': (context) => const CompletedTaskScreen(),
+          '/personalTaskList': (context) => const PersonalTaskScreen(),
           // '/task': (context) => const TaskCreationScreen(),
           '/home': (context) => const HomeScreen(),
         },

@@ -7,6 +7,7 @@ class TaskCard extends StatelessWidget {
   final String description;
   final DateTime? dueDate;
   final String status;
+  final bool fromCompleted;
   final VoidCallback? onTap;
   final VoidCallback? onStatusChange;
   final VoidCallback? onReassign;
@@ -20,6 +21,7 @@ class TaskCard extends StatelessWidget {
     this.onTap,
     this.onStatusChange,
     this.onReassign,
+    this.fromCompleted = false,
   }) : super(key: key);
 
   Color _getStatusColor() {
@@ -41,7 +43,7 @@ class TaskCard extends StatelessWidget {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: AppColors.cardBorder),
+        side: const BorderSide(color: AppColors.cardBorder),
       ),
       child: InkWell(
         onTap: onTap,
@@ -61,11 +63,14 @@ class TaskCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Checkbox(
-                    value: status == 'completed',
-                    onChanged: (bool? value) {
-                      if (onStatusChange != null) onStatusChange!();
-                    },
+                  Visibility(
+                    visible: !fromCompleted,
+                    child: Checkbox(
+                      value: status == 'completed',
+                      onChanged: (bool? value) {
+                        if (onStatusChange != null) onStatusChange!();
+                      },
+                    ),
                   ),
                   Expanded(
                     child: Column(
@@ -87,9 +92,13 @@ class TaskCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.person_outline, color: AppColors.textSecondary),
-                    onPressed: onReassign,
+                  Visibility(
+                    visible: !fromCompleted,
+                    child: IconButton(
+                      icon: const Icon(Icons.person_outline,
+                          color: AppColors.textSecondary),
+                      onPressed: onReassign,
+                    ),
                   ),
                 ],
               ),
@@ -100,7 +109,8 @@ class TaskCard extends StatelessWidget {
                     _buildDueDate(context),
                     const SizedBox(width: 12),
                   ],
-                  _buildStatusChip(),
+                  Visibility(
+                      visible: !fromCompleted, child: _buildStatusChip()),
                 ],
               ),
             ],
@@ -120,7 +130,7 @@ class TaskCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
+          const Icon(
             Icons.calendar_today_outlined,
             size: 14,
             color: AppColors.textSecondary,
@@ -155,4 +165,4 @@ class TaskCard extends StatelessWidget {
       ),
     );
   }
-} 
+}

@@ -29,12 +29,7 @@ class PersonalTaskScreen extends StatelessWidget {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('alltasks')
-            .where('state', isNotEqualTo: 'completed')
-            .where('assignedto', isEqualTo: userPhone)
-            .where('createdBy', isEqualTo: userPhone)
-            .snapshots(),
+        stream: getTasks(userPhone),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -57,8 +52,12 @@ class PersonalTaskScreen extends StatelessWidget {
           }
 
           final tasks = snapshot.data?.docs ?? [];
+          final filteredTasks = tasks.where((task) {
+            final data = task.data() as Map<String, dynamic>;
+            return data['state'] != 'completed';
+          }).toList();
 
-          if (tasks.isEmpty) {
+          if (filteredTasks.isEmpty) {
             return Center(
               child: Text(
                 'No tasks yet',
@@ -71,9 +70,9 @@ class PersonalTaskScreen extends StatelessWidget {
 
           return ListView.builder(
             padding: const EdgeInsets.all(16),
-            itemCount: tasks.length,
+            itemCount: filteredTasks.length,
             itemBuilder: (context, index) {
-              final task = tasks[index].data() as Map<String, dynamic>;
+              final task = filteredTasks[index].data() as Map<String, dynamic>;
               return TaskCard(
                 fromCompleted: true,
                 title: task['title'] ?? 'Untitled Task',
@@ -90,4 +89,12 @@ class PersonalTaskScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+Stream<QuerySnapshot> getTasks(String userPhone) {
+  return FirebaseFirestore.instance
+      .collection('alltasks')
+      .where('createdBy', isEqualTo: userPhone)
+      .where('assignedto', isEqualTo: userPhone)
+      .snapshots();
 }

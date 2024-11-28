@@ -264,7 +264,8 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                       } else if (_selectedChip == 'assign' &&
                           _selectedContact != null) {
                         // For assigned tasks, use the selected contact's ID
-                        assignedTo = _selectedContact!.id;
+                        assignedTo = _selectedContact!.phones.first.number
+                            .replaceAll(' ', '');
                       } else {
                         // Default to user's phone number if no specific assignment
                         assignedTo = userPhone;

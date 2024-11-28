@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:markitdone/ui/screens/homescreen.dart';
+import 'package:markitdone/ui/screens/schedule_screen.dart';
 
 import 'package:markitdone/ui/widgets/bottom_navigation.dart';
 
@@ -12,46 +13,33 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
-  final PageController _pageController = PageController();
 
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    // const ScheduleScreen(),
-    // const NotificationsScreen(),
-    // const SearchScreen(),
+  // List of screens to be displayed
+  final List<Widget> _screens = const [
+    HomeScreen(),
+    ScheduleScreen(),
+    Scaffold(
+        body: Center(
+            child: Text('Notifications Coming Soon'))), // Temporary placeholder
+    Scaffold(
+        body:
+            Center(child: Text('Search Coming Soon'))), // Temporary placeholder
   ];
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  void _onPageChanged(int index) {
-    setState(() => _currentIndex = index);
-  }
-
   void _onNavTap(int index) {
-    _pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
+    setState(() {
+      _currentIndex = index;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: _onPageChanged,
-        physics: const NeverScrollableScrollPhysics(), // Disable swipe
-        children: _screens,
-      ),
+      body: _screens[_currentIndex],
       bottomNavigationBar: CustomBottomNavigation(
         currentIndex: _currentIndex,
         onTap: _onNavTap,
       ),
     );
   }
-} 
+}

@@ -6,6 +6,41 @@ import 'package:markitdone/ui/widgets/task_card.dart';
 class TaskListingScreen extends StatelessWidget {
   const TaskListingScreen({Key? key}) : super(key: key);
 
+  // Add helper method to format dates
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final taskDate = DateTime(date.year, date.month, date.day);
+
+    if (taskDate == today) {
+      return 'Today';
+    } else if (taskDate == yesterday) {
+      return 'Yesterday';
+    } else {
+      return '${date.day}/${date.month}/${date.year}';
+    }
+  }
+
+  // Add method to group tasks by date
+  Map<String, List<QueryDocumentSnapshot>> _groupTasksByDate(
+      List<QueryDocumentSnapshot> tasks) {
+    final groupedTasks = <String, List<QueryDocumentSnapshot>>{};
+
+    for (var task in tasks) {
+      final data = task.data() as Map<String, dynamic>;
+      final date = (data['scheduledTime'] as Timestamp).toDate();
+      final dateString = _formatDate(date);
+
+      if (!groupedTasks.containsKey(dateString)) {
+        groupedTasks[dateString] = [];
+      }
+      groupedTasks[dateString]!.add(task);
+    }
+
+    return groupedTasks;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +70,10 @@ class TaskListingScreen extends StatelessWidget {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('alltasks').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('alltasks')
+            .orderBy('scheduledTime', descending: true)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -69,34 +107,156 @@ class TaskListingScreen extends StatelessWidget {
             );
           }
 
+          final groupedTasks = _groupTasksByDate(tasks);
+
           return ListView.builder(
             padding: const EdgeInsets.all(16),
-            itemCount: tasks.length,
+            itemCount: groupedTasks.length,
             itemBuilder: (context, index) {
-              final task = tasks[index].data() as Map<String, dynamic>;
-              return TaskCard(
-                title: task['title'] ?? 'Untitled Task',
-                description: task['description'] ?? '',
-                status: task['state'] ?? 'pending',
-                dueDate: task['scheduledTime']?.toDate(),
-                onTap: () {
-                  // Handle task tap
-                },
-                onStatusChange: () {
-                  // Update task status in Firestore
-                  FirebaseFirestore.instance
-                      .collection('alltasks')
-                      .doc(tasks[index].id)
-                      .update({'state': 'completed'});
-                },
-                onReassign: () {
-                  // Handle reassign action
-                },
+              final date = groupedTasks.keys.elementAt(index);
+              final tasksForDate = groupedTasks[date]!;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Date header with improved styling
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          date,
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 13,
+                                  ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Tasks for this date
+                  ...tasksForDate.map((task) {
+                    final taskData = task.data() as Map<String, dynamic>;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: InkWell(
+                        onTap: () {
+                          // Handle task tap if needed
+                        },
+                        borderRadius: BorderRadius.circular(8),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: Row(
+                            children: [
+                              // Custom Checkbox
+                              SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: Transform.scale(
+                                  scale: 0.9,
+                                  child: Checkbox(
+                                    value: taskData['state'] == 'completed',
+                                    onChanged: (bool? value) {
+                                      FirebaseFirestore.instance
+                                          .collection('alltasks')
+                                          .doc(task.id)
+                                          .update({
+                                        'state':
+                                            value! ? 'completed' : 'pending'
+                                      });
+                                    },
+                                    activeColor: AppColors.primary,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    side: BorderSide(
+                                      color: AppColors.primary.withOpacity(0.5),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              // Task Content
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      taskData['title'] ?? 'Untitled Task',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          ?.copyWith(
+                                            decoration:
+                                                taskData['state'] == 'completed'
+                                                    ? TextDecoration.lineThrough
+                                                    : null,
+                                            color:
+                                                taskData['state'] == 'completed'
+                                                    ? AppColors.textSecondary
+                                                    : AppColors.textPrimary,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                    ),
+                                    if (taskData['description']?.isNotEmpty ==
+                                        true) ...[
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        taskData['description'],
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color: AppColors.textSecondary,
+                                              fontSize: 14,
+                                            ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                              // Time indicator
+                              Text(
+                                _formatTime(taskData['scheduledTime'].toDate()),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 12,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ],
               );
             },
           );
         },
       ),
     );
+  }
+
+  // Add this helper method for time formatting
+  String _formatTime(DateTime dateTime) {
+    final hour = dateTime.hour.toString().padLeft(2, '0');
+    final minute = dateTime.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
   }
 }

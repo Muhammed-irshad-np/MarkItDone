@@ -24,12 +24,16 @@ class AppColors {
   static const cardBorder = Color(0xFF3F3F46); // Dark Border
   static const divider = Color(0xFF3F3F46); // Dark Divider
   static const inputFill = Color(0xFF2A2A30); // Input Background
+  static const border = Color(0xFFE0E0E0); // Light gray border color
 
   // New Accent Colors
   static const accent1 = Color(0xFFFF79C6); // Neon Pink
   static const accent2 = Color(0xFF9B59B6); // Deep Purple
   static const accent3 = Color(0xFF0ABDE3); // Electric Blue
   static const accent4 = Color(0xFF00B894); // Mint
+
+  static const Color success = Color(0xFF4CAF50); // Green color for success
+  static const Color warning = Color(0xFFFFC107); // Amber color for warning
 }
 
 ThemeData appTheme() {

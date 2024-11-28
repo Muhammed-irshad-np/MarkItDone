@@ -23,7 +23,7 @@ class AssignedTaskScreen extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Delegated Tasks',
+          'Assign Tasks',
           style: Theme.of(context).textTheme.headlineMedium,
         ),
       ),
@@ -50,17 +50,10 @@ class AssignedTaskScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'No delegated tasks',
+                    'No assigned tasks',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: AppColors.textSecondary,
                           fontWeight: FontWeight.w500,
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Tasks you assign to others will appear here',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.textSecondary.withOpacity(0.7),
                         ),
                   ),
                 ],
@@ -69,173 +62,194 @@ class AssignedTaskScreen extends StatelessWidget {
           }
 
           final tasks = snapshot.data!.docs;
-          tasks.sort((a, b) {
-            final aData = a.data() as Map<String, dynamic>;
-            final bData = b.data() as Map<String, dynamic>;
-            int assigneeCompare = (aData['assignedto'] as String)
-                .compareTo(bData['assignedto'] as String);
-            if (assigneeCompare != 0) return assigneeCompare;
-
-            DateTime aTime = (aData['scheduledTime'] as Timestamp).toDate();
-            DateTime bTime = (bData['scheduledTime'] as Timestamp).toDate();
-            return bTime.compareTo(aTime);
-          });
-
           return ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             itemCount: tasks.length,
             itemBuilder: (context, index) {
               final taskData = tasks[index].data() as Map<String, dynamic>;
-              final assignedTo = taskData['assignedto'] as String;
               final assigneeName = taskData['assigneeName'] ?? 'Unknown User';
               final isCompleted = taskData['state'] == 'completed';
+              final scheduledTime =
+                  (taskData['scheduledTime'] as Timestamp).toDate();
 
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: AppColors.border,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Assignee Header
-                      Container(
-                        padding: const EdgeInsets.all(12),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // Date header if needed
+                  if (index == 0 ||
+                      _shouldShowDateHeader(
+                          tasks[index - 1], tasks[index])) ...[
+                    Center(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.surface,
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(11),
-                          ),
+                          color: AppColors.primary.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 16,
-                              backgroundColor:
-                                  AppColors.primary.withOpacity(0.1),
-                              child: Text(
-                                assigneeName[0].toUpperCase(),
-                                style: TextStyle(
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                        child: Text(
+                          _formatDateHeader(scheduledTime),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                        ),
+                      ),
+                    ),
+                  ],
+                  // Task bubble
+                  Container(
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.85,
+                    ),
+                    margin: const EdgeInsets.only(bottom: 12),
+                    child: IntrinsicHeight(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: isCompleted
+                                  ? AppColors.primary.withOpacity(0.15)
+                                  : AppColors.primary.withOpacity(0.1),
+                              borderRadius: const BorderRadius.only(
+                                topRight: Radius.circular(16),
+                                bottomLeft: Radius.circular(16),
+                                bottomRight: Radius.circular(16),
+                              ),
+                              border: Border.all(
+                                color: AppColors.primary.withOpacity(0.15),
+                                width: 1,
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Assignee info with status
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 14,
+                                      backgroundColor: Colors.white,
+                                      child: Text(
+                                        assigneeName[0].toUpperCase(),
+                                        style: TextStyle(
+                                          color: AppColors.primary,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      assigneeName,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            color: AppColors.primary,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: isCompleted
+                                            ? AppColors.primary.withOpacity(0.1)
+                                            : AppColors.warning
+                                                .withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Text(
+                                        isCompleted ? 'Completed' : 'Pending',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color: isCompleted
+                                                  ? AppColors.primary
+                                                  : AppColors.warning,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 11,
+                                            ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                // Task details
+                                Text(
+                                  taskData['title'] ?? 'Untitled Task',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textPrimary,
+                                      ),
+                                ),
+                                if (taskData['description']?.isNotEmpty ==
+                                    true) ...[
+                                  const SizedBox(height: 4),
                                   Text(
-                                    assigneeName,
+                                    taskData['description'],
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium
                                         ?.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                  ),
-                                  Text(
-                                    assignedTo,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(
                                           color: AppColors.textSecondary,
                                         ),
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: isCompleted
-                                    ? AppColors.success.withOpacity(0.1)
-                                    : AppColors.warning.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Text(
-                                isCompleted ? 'Completed' : 'Pending',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                      color: isCompleted
-                                          ? AppColors.success
-                                          : AppColors.warning,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Task Details
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              taskData['title'] ?? 'Untitled Task',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                            if (taskData['description']?.isNotEmpty ==
-                                true) ...[
-                              const SizedBox(height: 4),
-                              Text(
-                                taskData['description'],
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
+                                const SizedBox(height: 8),
+                                // Time with double check for completed tasks
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.access_time,
+                                      size: 14,
                                       color: AppColors.textSecondary,
                                     ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                            const SizedBox(height: 12),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.calendar_today_outlined,
-                                  size: 16,
-                                  color: AppColors.textSecondary,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  _formatDateTime(
-                                      taskData['scheduledTime'].toDate()),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.copyWith(
-                                        color: AppColors.textSecondary,
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      _formatTime(scheduledTime),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: AppColors.textSecondary,
+                                            fontSize: 12,
+                                          ),
+                                    ),
+                                    if (isCompleted) ...[
+                                      const SizedBox(width: 4),
+                                      Icon(
+                                        Icons.done_all,
+                                        size: 14,
+                                        color: AppColors.primary,
                                       ),
+                                    ],
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               );
             },
           );
@@ -244,18 +258,35 @@ class AssignedTaskScreen extends StatelessWidget {
     );
   }
 
-  String _formatDateTime(DateTime dateTime) {
+  bool _shouldShowDateHeader(
+      DocumentSnapshot previous, DocumentSnapshot current) {
+    final previousData = previous.data() as Map<String, dynamic>;
+    final currentData = current.data() as Map<String, dynamic>;
+
+    final previousDate = (previousData['scheduledTime'] as Timestamp).toDate();
+    final currentDate = (currentData['scheduledTime'] as Timestamp).toDate();
+
+    return !isSameDay(previousDate, currentDate);
+  }
+
+  bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
+
+  String _formatDateHeader(DateTime date) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final tomorrow = today.add(const Duration(days: 1));
-    final dateToCheck = DateTime(dateTime.year, dateTime.month, dateTime.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final taskDate = DateTime(date.year, date.month, date.day);
 
-    if (dateToCheck == today) {
-      return 'Today at ${_formatTime(dateTime)}';
-    } else if (dateToCheck == tomorrow) {
-      return 'Tomorrow at ${_formatTime(dateTime)}';
+    if (taskDate == today) {
+      return 'Today';
+    } else if (taskDate == yesterday) {
+      return 'Yesterday';
     } else {
-      return '${dateTime.day}/${dateTime.month} at ${_formatTime(dateTime)}';
+      return '${date.day}/${date.month}/${date.year}';
     }
   }
 

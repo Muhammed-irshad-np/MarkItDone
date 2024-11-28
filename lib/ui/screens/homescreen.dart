@@ -8,6 +8,8 @@ import 'package:markitdone/ui/screens/task_creation.dart';
 import 'package:markitdone/ui/widgets/category_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:markitdone/ui/widgets/task_card.dart';
+import 'package:provider/provider.dart';
+import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -70,32 +72,36 @@ class _HomeScreenState extends State<HomeScreen>
     return SliverAppBar(
       floating: true,
       backgroundColor: AppColors.background,
-      title: Row(
-        children: [
-          CircleAvatar(
-            backgroundColor: AppColors.primary.withOpacity(0.1),
-            child: Text(
-              _auth.currentUser?.phoneNumber?.substring(0, 2) ?? 'U',
-              style: TextStyle(color: AppColors.primary),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      title: Consumer<AuthViewModel>(
+        builder: (context, authVM, _) {
+          return Row(
             children: [
-              Text(
-                'Hello,',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
+              CircleAvatar(
+                backgroundColor: AppColors.primary.withOpacity(0.1),
+                child: Text(
+                  authVM.name.isNotEmpty ? authVM.name[0].toUpperCase() : 'U',
+                  style: TextStyle(color: AppColors.primary),
+                ),
               ),
-              Text(
-                _auth.currentUser?.phoneNumber ?? 'User',
-                style: Theme.of(context).textTheme.titleMedium,
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Hello,',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                  ),
+                  Text(
+                    authVM.name.isNotEmpty ? authVM.name : 'User',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ],
               ),
             ],
-          ),
-        ],
+          );
+        },
       ),
       actions: [
         AnimatedBuilder(

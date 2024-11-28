@@ -8,6 +8,7 @@ import 'package:markitdone/ui/screens/auth_screen.dart';
 import 'package:markitdone/ui/screens/comleted_task_screen.dart';
 import 'package:markitdone/ui/screens/created_task_screen.dart';
 import 'package:markitdone/ui/screens/homescreen.dart';
+import 'package:markitdone/ui/screens/main_screen.dart';
 import 'package:markitdone/ui/screens/personal_task_screen.dart';
 import 'package:markitdone/ui/screens/register_and_permission_screen.dart';
 import 'package:markitdone/ui/screens/scheduled_task_screen.dart';
@@ -58,6 +59,7 @@ class MyApp extends StatelessWidget {
           '/personalTaskList': (context) => const PersonalTaskScreen(),
           '/assignedTaskList': (context) => const AssignedTaskScreen(),
           '/scheduledTaskList': (context) => const ScheduledTaskScreen(),
+          '/main': (context) => const MainScreen(),
           // '/task': (context) => const TaskCreationScreen(),
           '/home': (context) => const HomeScreen(),
         },

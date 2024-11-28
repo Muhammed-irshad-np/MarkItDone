@@ -48,9 +48,13 @@ class _AuthScreenState extends State<AuthScreen>
         final res = await viewModel.registerorloginuser(context);
         if (res['documentId'] != null) {
           if (res['isFirstTimeUser']) {
-            Navigator.pushReplacementNamed(context, '/register');
+            if (mounted) {
+              Navigator.pushReplacementNamed(context, '/register');
+            }
           } else {
-            Navigator.pushReplacementNamed(context, '/home');
+            if (mounted) {
+              Navigator.pushReplacementNamed(context, '/main');
+            }
           }
         }
       }
@@ -65,7 +69,9 @@ class _AuthScreenState extends State<AuthScreen>
         );
       }
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -169,46 +175,95 @@ class _AuthScreenState extends State<AuthScreen>
           if (viewModel.isOTPSent) _buildOTPInput(context, viewModel),
           const SizedBox(height: 24),
           SizedBox(
-            height: 50, // Fixed height for consistent button size
+            height: 52,
             child: ElevatedButton(
               onPressed: _isLoading
                   ? null
                   : () async {
-                      setState(() => _isLoading = true);
-                      try {
-                        if (viewModel.isOTPSent) {
-                          await _handleOtpSubmit(viewModel);
-                        } else {
+                      if (viewModel.isOTPSent) {
+                        await _handleOtpSubmit(viewModel);
+                      } else {
+                        if (_phoneController.text.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please enter your phone number'),
+                              backgroundColor: AppColors.error,
+                            ),
+                          );
+                          return;
+                        }
+                        setState(() => _isLoading = true);
+                        try {
                           viewModel.setPhoneNumber(_phoneController.text);
                           await viewModel.verifyPhoneNumber();
-                        }
-                      } finally {
-                        if (mounted) {
-                          setState(() => _isLoading = false);
+                        } catch (e) {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Error: ${e.toString()}'),
+                                backgroundColor: AppColors.error,
+                              ),
+                            );
+                          }
+                        } finally {
+                          if (mounted) {
+                            setState(() => _isLoading = false);
+                          }
                         }
                       }
                     },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: AppColors.textLight,
+                disabledBackgroundColor: AppColors.primary.withOpacity(0.6),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 elevation: 0,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
               ),
               child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: ScaleTransition(
+                      scale: animation,
+                      child: child,
+                    ),
+                  );
+                },
                 child: _isLoading
-                    ? const SizedBox(
-                        height: 24,
-                        width: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
+                    ? Row(
+                        key: const ValueKey('loading'),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.textLight,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            viewModel.isOTPSent
+                                ? 'Verifying...'
+                                : 'Sending OTP...',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       )
                     : Row(
+                        key: const ValueKey('normal'),
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(

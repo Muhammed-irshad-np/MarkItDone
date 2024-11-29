@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:markitdone/config/theme.dart';
 import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
-import 'package:markitdone/ui/widgets/task_card.dart';
 import 'package:provider/provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 
 class PersonalTaskScreen extends StatelessWidget {
   const PersonalTaskScreen({super.key});
@@ -264,27 +265,38 @@ class PersonalTaskScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isCompleted
-                        ? AppColors.primary.withOpacity(0.1)
-                        : AppColors.warning.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    isCompleted ? 'Completed' : 'Pending',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: isCompleted
-                              ? AppColors.primary
-                              : AppColors.warning,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 11,
-                        ),
-                  ),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.person_add_outlined),
+                      iconSize: 20,
+                      color: AppColors.textSecondary,
+                      onPressed: () => _showAssignDialog(context, taskId),
+                      tooltip: 'Assign task',
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isCompleted
+                            ? AppColors.primary.withOpacity(0.1)
+                            : AppColors.warning.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        isCompleted ? 'Completed' : 'Pending',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: isCompleted
+                                  ? AppColors.primary
+                                  : AppColors.warning,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 11,
+                            ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -349,6 +361,83 @@ class PersonalTaskScreen extends StatelessWidget {
     final hour = dateTime.hour.toString().padLeft(2, '0');
     final minute = dateTime.minute.toString().padLeft(2, '0');
     return '$hour:$minute';
+  }
+
+  Future<void> _showAssignDialog(BuildContext context, String taskId) async {
+    try {
+      bool hasPermission = await _handleContactPermission(context);
+      if (!hasPermission) return;
+
+      final contact = await FlutterContacts.openExternalPick();
+      if (contact != null) {
+        // Get phone number
+        final phone = contact.phones.first.number.replaceAll(' ', '');
+
+        // Update task in Firestore
+        await FirebaseFirestore.instance
+            .collection('alltasks')
+            .doc(taskId)
+            .update({
+          'assignedto': phone,
+          'assigneeName': contact.displayName,
+        });
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Task assigned to ${contact.displayName}'),
+              backgroundColor: AppColors.primary,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error assigning task'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<bool> _handleContactPermission(BuildContext context) async {
+    PermissionStatus permission = await Permission.contacts.status;
+
+    if (permission != PermissionStatus.granted) {
+      permission = await Permission.contacts.request();
+      if (permission != PermissionStatus.granted) {
+        if (permission == PermissionStatus.permanentlyDenied &&
+            context.mounted) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Contact Permission Required'),
+              content: const Text(
+                  'This app needs contact permission to assign tasks. '
+                  'Please enable it in app settings.'),
+              actions: [
+                TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                TextButton(
+                  child: const Text('Open Settings'),
+                  onPressed: () {
+                    openAppSettings();
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          );
+        }
+        return false;
+      }
+    }
+    return true;
   }
 }
 

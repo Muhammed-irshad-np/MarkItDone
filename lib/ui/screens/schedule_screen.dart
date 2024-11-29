@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:markitdone/config/theme.dart';
+import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class ScheduleScreen extends StatelessWidget {
   const ScheduleScreen({Key? key}) : super(key: key);
@@ -13,10 +15,10 @@ class ScheduleScreen extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('alltasks')
-            .where('type', isEqualTo: 'scheduled')
+            .where('isScheduled', isEqualTo: true)
             .where('createdBy',
-                isEqualTo: FirebaseAuth.instance.currentUser?.uid)
-            .orderBy('scheduledTime', descending: false)
+                isEqualTo: Provider.of<AuthViewModel>(context, listen: false)
+                    .phoneNumber)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

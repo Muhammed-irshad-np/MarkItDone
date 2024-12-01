@@ -81,4 +81,13 @@ class AuthViewModel extends ChangeNotifier {
   Future<bool> updateUserNameAndStatus(String name, String documentId) async {
     return await _userRepository.updateUserNameAndStatus(name, documentId);
   }
+
+  void reset() {
+    _phoneNumber = null;
+    _name = null;
+    _verificationId = '';
+    _isOTPSent = false;
+    documentId = '';
+    notifyListeners();
+  }
 }

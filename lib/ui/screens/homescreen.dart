@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:markitdone/config/theme.dart';
+import 'package:markitdone/providers/view_models/tasks_viewmodel.dart';
 import 'package:markitdone/ui/screens/task_creation.dart';
 import 'package:markitdone/ui/widgets/category_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -41,29 +42,94 @@ class _HomeScreenState extends State<HomeScreen>
     ).animate(_notificationController);
   }
 
+  Future<void> _handleLogout(BuildContext context) async {
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirm Logout'),
+        content: Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.error,
+            ),
+            child: Text('Logout'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldLogout == true) {
+      Provider.of<AuthViewModel>(context, listen: false).reset();
+      Provider.of<TasksViewmodel>(context, listen: false).reset();
+      await _auth.signOut();
+
+      if (context.mounted) {
+        Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            _buildAppBar(context),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 24),
-                    _buildTaskOverview(context),
-                    const SizedBox(height: 24),
-                    _buildTaskCategories(context),
-                  ],
+    return WillPopScope(
+      onWillPop: () async {
+        final shouldLogout = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Confirm Logout'),
+            content: Text('Are you sure you want to logout?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.error,
+                ),
+                child: Text('Logout'),
+              ),
+            ],
+          ),
+        );
+
+        if (shouldLogout == true) {
+          Provider.of<AuthViewModel>(context, listen: false).reset();
+          Provider.of<TasksViewmodel>(context, listen: false).reset();
+          await _auth.signOut();
+          return true;
+        }
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: SafeArea(
+          child: CustomScrollView(
+            slivers: [
+              _buildAppBar(context),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 24),
+                      _buildTaskOverview(context),
+                      const SizedBox(height: 24),
+                      _buildTaskCategories(context),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -105,19 +171,42 @@ class _HomeScreenState extends State<HomeScreen>
         },
       ),
       actions: [
-        AnimatedBuilder(
-          animation: _notificationController,
-          builder: (context, child) {
-            return IconButton(
-              icon: Icon(
-                Icons.notifications_outlined,
-                color: _colorAnimation.value,
-              ),
-              onPressed: () {
-                _notificationController.forward(from: 0);
-              },
-            );
+        PopupMenuButton<String>(
+          icon: Icon(
+            Icons.more_vert,
+            color: AppColors.textPrimary,
+          ),
+          color: AppColors.surface,
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          onSelected: (value) async {
+            if (value == 'logout') {
+              await _handleLogout(context);
+            }
           },
+          itemBuilder: (context) => [
+            PopupMenuItem<String>(
+              value: 'logout',
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.logout,
+                    color: AppColors.error,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Logout',
+                    style: TextStyle(
+                      color: AppColors.error,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ],
     );

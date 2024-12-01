@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:markitdone/config/theme.dart';
 import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
+import 'package:markitdone/ui/widgets/contact_picker_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
@@ -319,10 +320,27 @@ class AssignedTaskScreen extends StatelessWidget {
       bool hasPermission = await _handleContactPermission(context);
       if (!hasPermission) return;
 
-      final contact = await FlutterContacts.openExternalPick();
-      if (contact != null) {
+      // Get all contacts
+      final contacts = await FlutterContacts.getContacts(
+        withProperties: true,
+        withPhoto: true,
+      );
+
+      if (!context.mounted) return;
+
+      // Show custom contact picker dialog
+      final selectedContact = await showModalBottomSheet<Contact>(
+        context: context,
+        backgroundColor: AppColors.surface,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (context) => ContactPickerSheet(contacts: contacts),
+      );
+
+      if (selectedContact != null && context.mounted) {
         // Get phone number
-        final phone = contact.phones.first.number.replaceAll(' ', '');
+        final phone = selectedContact.phones.first.number.replaceAll(' ', '');
 
         // Update task in Firestore
         await FirebaseFirestore.instance
@@ -330,14 +348,14 @@ class AssignedTaskScreen extends StatelessWidget {
             .doc(taskId)
             .update({
           'assignedto': phone,
-          'assigneeName': contact.displayName,
+          'assigneeName': selectedContact.displayName,
         });
 
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                  'Task reassigned from $currentAssignee to ${contact.displayName}'),
+                  'Task reassigned from $currentAssignee to ${selectedContact.displayName}'),
               backgroundColor: AppColors.primary,
             ),
           );

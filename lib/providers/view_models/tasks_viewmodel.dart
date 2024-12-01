@@ -40,4 +40,9 @@ class TasksViewmodel extends ChangeNotifier {
       print(error.toString());
     }
   }
+
+  void reset() {
+    // Clear any stored task data or state
+    notifyListeners();
+  }
 }

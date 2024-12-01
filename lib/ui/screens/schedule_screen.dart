@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:markitdone/config/theme.dart';
 import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
+import 'package:markitdone/providers/view_models/tasks_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class ScheduleScreen extends StatelessWidget {
@@ -10,98 +11,134 @@ class ScheduleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppColors.background,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: AppColors.textPrimary,
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          'Schedule',
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('alltasks')
-            .where('isScheduled', isEqualTo: true)
-            .where('createdBy',
-                isEqualTo: Provider.of<AuthViewModel>(context, listen: false)
-                    .phoneNumber)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            );
-          }
-
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.event_note_rounded,
-                    size: 64,
-                    color: AppColors.textSecondary.withOpacity(0.5),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No scheduled tasks',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                  ),
-                ],
+    return WillPopScope(
+      onWillPop: () async {
+        final shouldLogout = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Confirm Logout'),
+            content: Text('Are you sure you want to logout?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text('Cancel'),
               ),
-            );
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.error,
+                ),
+                child: Text('Logout'),
+              ),
+            ],
+          ),
+        );
+
+        if (shouldLogout == true) {
+          Provider.of<AuthViewModel>(context, listen: false).reset();
+          Provider.of<TasksViewmodel>(context, listen: false).reset();
+          await FirebaseAuth.instance.signOut();
+          if (context.mounted) {
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/', (route) => false);
           }
+          return false;
+        }
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: AppColors.background,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            color: AppColors.textPrimary,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: Text(
+            'Schedule',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+        ),
+        body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('alltasks')
+              .where('isScheduled', isEqualTo: true)
+              .where('createdBy',
+                  isEqualTo: Provider.of<AuthViewModel>(context, listen: false)
+                      .phoneNumber)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              );
+            }
 
-          final tasks = snapshot.data!.docs;
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: tasks.length,
-            itemBuilder: (context, index) {
-              final task = tasks[index].data() as Map<String, dynamic>;
-              final scheduledTime = task['scheduledTime'].toDate();
-
-              if (index == 0 ||
-                  _shouldShowDateHeader(tasks[index - 1], tasks[index])) {
-                return Column(
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Center(
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 16),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          _formatDateHeader(scheduledTime),
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                    Icon(
+                      Icons.event_note_rounded,
+                      size: 64,
+                      color: AppColors.textSecondary.withOpacity(0.5),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'No scheduled tasks',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            final tasks = snapshot.data!.docs;
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: tasks.length,
+              itemBuilder: (context, index) {
+                final task = tasks[index].data() as Map<String, dynamic>;
+                final scheduledTime = task['scheduledTime'].toDate();
+
+                if (index == 0 ||
+                    _shouldShowDateHeader(tasks[index - 1], tasks[index])) {
+                  return Column(
+                    children: [
+                      Center(
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 16),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            _formatDateHeader(scheduledTime),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                          ),
                         ),
                       ),
-                    ),
-                    _buildTaskItem(context, task, tasks[index].id),
-                  ],
-                );
-              }
+                      _buildTaskItem(context, task, tasks[index].id),
+                    ],
+                  );
+                }
 
-              return _buildTaskItem(context, task, tasks[index].id);
-            },
-          );
-        },
+                return _buildTaskItem(context, task, tasks[index].id);
+              },
+            );
+          },
+        ),
       ),
     );
   }

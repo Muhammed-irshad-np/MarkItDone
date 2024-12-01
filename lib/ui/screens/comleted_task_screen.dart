@@ -71,6 +71,7 @@ class CompletedTaskScreen extends StatelessWidget {
               if (index == 0 ||
                   _shouldShowDateHeader(tasks[index - 1], tasks[index])) {
                 return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Center(
                       child: Container(
@@ -120,14 +121,14 @@ class CompletedTaskScreen extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.1),
+          color: AppColors.primary.withOpacity(0.05),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(16),
             bottomLeft: Radius.circular(16),
             bottomRight: Radius.circular(16),
           ),
           border: Border.all(
-            color: AppColors.primary.withOpacity(0.15),
+            color: AppColors.primary.withOpacity(0.1),
             width: 1,
           ),
         ),
@@ -137,31 +138,25 @@ class CompletedTaskScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.check,
+                    size: 16,
+                    color: AppColors.primary,
+                  ),
+                ),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     task['title'] ?? 'Untitled Task',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                          decoration: TextDecoration.lineThrough,
-                        ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    'Completed',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 11,
+                          color: AppColors.textSecondary,
                         ),
                   ),
                 ),
@@ -169,20 +164,23 @@ class CompletedTaskScreen extends StatelessWidget {
             ),
             if (task['description']?.isNotEmpty == true) ...[
               const SizedBox(height: 4),
-              Text(
-                task['description'],
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
-                      decoration: TextDecoration.lineThrough,
-                    ),
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
+              Padding(
+                padding: const EdgeInsets.only(left: 28),
+                child: Text(
+                  task['description'],
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textSecondary.withOpacity(0.7),
+                      ),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
             const SizedBox(height: 8),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                const SizedBox(width: 28),
                 Icon(
                   isScheduled
                       ? Icons.calendar_today_outlined
@@ -193,8 +191,8 @@ class CompletedTaskScreen extends StatelessWidget {
                 const SizedBox(width: 4),
                 Text(
                   isScheduled
-                      ? 'Scheduled: ${_formatTime(timeToShow)}'
-                      : 'Created: ${_formatTime(timeToShow)}',
+                      ? 'Completed at ${_formatTime(timeToShow)}'
+                      : 'Completed at ${_formatTime(timeToShow)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppColors.textSecondary,
                         fontSize: 12,
@@ -219,9 +217,17 @@ class CompletedTaskScreen extends StatelessWidget {
     final previousData = previous.data() as Map<String, dynamic>;
     final currentData = current.data() as Map<String, dynamic>;
 
-    final previousDate = (previousData['scheduledTime'] as Timestamp).toDate();
-    final currentDate = (currentData['scheduledTime'] as Timestamp).toDate();
+    final previousIsScheduled = previousData['isScheduled'] ?? false;
+    final currentIsScheduled = currentData['isScheduled'] ?? false;
 
+    final previousDate = previousIsScheduled
+        ? previousData['scheduledTime']?.toDate()
+        : previousData['createdAt']?.toDate();
+    final currentDate = currentIsScheduled
+        ? currentData['scheduledTime']?.toDate()
+        : currentData['createdAt']?.toDate();
+
+    if (previousDate == null || currentDate == null) return false;
     return !isSameDay(previousDate, currentDate);
   }
 

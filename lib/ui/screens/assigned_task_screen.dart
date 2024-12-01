@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:markitdone/config/theme.dart';
 import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
 import 'package:provider/provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 
 class AssignedTaskScreen extends StatelessWidget {
   const AssignedTaskScreen({Key? key}) : super(key: key);
@@ -182,6 +184,21 @@ class AssignedTaskScreen extends StatelessWidget {
                                             ),
                                       ),
                                     ),
+                                    const SizedBox(width: 8),
+                                    IconButton(
+                                      icon:
+                                          const Icon(Icons.person_add_outlined),
+                                      iconSize: 20,
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                      color: AppColors.textSecondary,
+                                      onPressed: () => _showReassignDialog(
+                                        context,
+                                        tasks[index].id,
+                                        assigneeName,
+                                      ),
+                                      tooltip: 'Reassign task',
+                                    ),
                                   ],
                                 ),
                                 const SizedBox(height: 12),
@@ -294,5 +311,84 @@ class AssignedTaskScreen extends StatelessWidget {
     final hour = dateTime.hour.toString().padLeft(2, '0');
     final minute = dateTime.minute.toString().padLeft(2, '0');
     return '$hour:$minute';
+  }
+
+  Future<void> _showReassignDialog(
+      BuildContext context, String taskId, String currentAssignee) async {
+    try {
+      bool hasPermission = await _handleContactPermission(context);
+      if (!hasPermission) return;
+
+      final contact = await FlutterContacts.openExternalPick();
+      if (contact != null) {
+        // Get phone number
+        final phone = contact.phones.first.number.replaceAll(' ', '');
+
+        // Update task in Firestore
+        await FirebaseFirestore.instance
+            .collection('alltasks')
+            .doc(taskId)
+            .update({
+          'assignedto': phone,
+          'assigneeName': contact.displayName,
+        });
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  'Task reassigned from $currentAssignee to ${contact.displayName}'),
+              backgroundColor: AppColors.primary,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error reassigning task'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<bool> _handleContactPermission(BuildContext context) async {
+    PermissionStatus permission = await Permission.contacts.status;
+
+    if (permission != PermissionStatus.granted) {
+      permission = await Permission.contacts.request();
+      if (permission != PermissionStatus.granted) {
+        if (permission == PermissionStatus.permanentlyDenied &&
+            context.mounted) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Contact Permission Required'),
+              content: const Text(
+                  'This app needs contact permission to assign tasks. '
+                  'Please enable it in app settings.'),
+              actions: [
+                TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                TextButton(
+                  child: const Text('Open Settings'),
+                  onPressed: () {
+                    openAppSettings();
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          );
+        }
+        return false;
+      }
+    }
+    return true;
   }
 }

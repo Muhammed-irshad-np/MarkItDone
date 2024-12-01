@@ -12,6 +12,19 @@ class ScheduleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: AppColors.background,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          color: AppColors.textPrimary,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          'Schedule',
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('alltasks')
@@ -23,7 +36,7 @@ class ScheduleScreen extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(color: AppColors.primary),
             );
           }
 
@@ -34,21 +47,13 @@ class ScheduleScreen extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.event_note_rounded,
-                    size: 120,
-                    color: AppColors.primary.withOpacity(0.2),
+                    size: 64,
+                    color: AppColors.textSecondary.withOpacity(0.5),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
                   Text(
-                    'No scheduled events',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Add tasks with dates to see them here',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    'No scheduled tasks',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           color: AppColors.textSecondary,
                         ),
                   ),
@@ -58,106 +63,97 @@ class ScheduleScreen extends StatelessWidget {
           }
 
           final tasks = snapshot.data!.docs;
-          return CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    'Schedule',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
-                        ),
-                  ),
-                ),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final task = tasks[index];
-                    final taskData = task.data() as Map<String, dynamic>;
-                    final scheduledTime =
-                        (taskData['scheduledTime'] as Timestamp).toDate();
-                    final isToday = _isToday(scheduledTime);
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: tasks.length,
+            itemBuilder: (context, index) {
+              final task = tasks[index].data() as Map<String, dynamic>;
+              final scheduledTime = task['scheduledTime'].toDate();
 
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
+              if (index == 0 ||
+                  _shouldShowDateHeader(tasks[index - 1], tasks[index])) {
+                return Column(
+                  children: [
+                    Center(
                       child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 4),
                         decoration: BoxDecoration(
-                          border: Border.all(
-                            color:
-                                isToday ? AppColors.primary : AppColors.border,
-                            width: isToday ? 2 : 1,
-                          ),
+                          color: AppColors.primary.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          title: Text(
-                            taskData['title'] ?? 'Untitled Task',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  decoration: taskData['state'] == 'completed'
-                                      ? TextDecoration.lineThrough
-                                      : null,
-                                ),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (taskData['description']?.isNotEmpty ==
-                                  true) ...[
-                                const SizedBox(height: 4),
-                                Text(
-                                  taskData['description'],
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.access_time,
-                                    size: 16,
-                                    color: isToday
-                                        ? AppColors.primary
-                                        : AppColors.textSecondary,
+                        child: Text(
+                          _formatDateHeader(scheduledTime),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    _formatDateTime(scheduledTime),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(
-                                          color: isToday
-                                              ? AppColors.primary
-                                              : AppColors.textSecondary,
-                                          fontWeight: isToday
-                                              ? FontWeight.w600
-                                              : FontWeight.normal,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          trailing: Checkbox(
-                            value: taskData['state'] == 'completed',
+                        ),
+                      ),
+                    ),
+                    _buildTaskItem(context, task, tasks[index].id),
+                  ],
+                );
+              }
+
+              return _buildTaskItem(context, task, tasks[index].id);
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildTaskItem(
+      BuildContext context, Map<String, dynamic> task, String taskId) {
+    final isCompleted = task['state'] == 'completed';
+    final scheduledTime = task['scheduledTime'].toDate();
+    final isToday = _isToday(scheduledTime);
+
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Container(
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.85,
+        ),
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: AppColors.primary.withOpacity(0.1),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(16),
+            bottomLeft: Radius.circular(16),
+            bottomRight: Radius.circular(16),
+          ),
+          border: Border.all(
+            color: isToday
+                ? AppColors.primary
+                : AppColors.primary.withOpacity(0.15),
+            width: isToday ? 2 : 1,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: Transform.scale(
+                          scale: 0.9,
+                          child: Checkbox(
+                            value: isCompleted,
                             onChanged: (bool? value) {
                               FirebaseFirestore.instance
                                   .collection('alltasks')
-                                  .doc(task.id)
+                                  .doc(taskId)
                                   .update({
                                 'state': value! ? 'completed' : 'pending'
                               });
@@ -166,17 +162,91 @@ class ScheduleScreen extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(6),
                             ),
+                            side: BorderSide(
+                              color: AppColors.primary.withOpacity(0.5),
+                              width: 1.5,
+                            ),
                           ),
                         ),
                       ),
-                    );
-                  },
-                  childCount: tasks.length,
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          task['title'] ?? 'Untitled Task',
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.textPrimary,
+                                    decoration: isCompleted
+                                        ? TextDecoration.lineThrough
+                                        : null,
+                                  ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isCompleted
+                        ? AppColors.primary.withOpacity(0.1)
+                        : AppColors.warning.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    isCompleted ? 'Completed' : 'Pending',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: isCompleted
+                              ? AppColors.primary
+                              : AppColors.warning,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 11,
+                        ),
+                  ),
+                ),
+              ],
+            ),
+            if (task['description']?.isNotEmpty == true) ...[
+              const SizedBox(height: 4),
+              Text(
+                task['description'],
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textSecondary,
+                      decoration:
+                          isCompleted ? TextDecoration.lineThrough : null,
+                    ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
-          );
-        },
+            const SizedBox(height: 8),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.calendar_today_outlined,
+                  size: 14,
+                  color: isToday ? AppColors.primary : AppColors.textSecondary,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  'Scheduled: ${_formatDateTime(scheduledTime)}',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: isToday
+                            ? AppColors.primary
+                            : AppColors.textSecondary,
+                        fontSize: 12,
+                        fontWeight: isToday ? FontWeight.w600 : null,
+                      ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -204,8 +274,56 @@ class ScheduleScreen extends StatelessWidget {
   }
 
   String _formatTime(DateTime dateTime) {
-    final hour = dateTime.hour.toString().padLeft(2, '0');
+    String period = dateTime.hour >= 12 ? 'PM' : 'AM';
+    int hour = dateTime.hour > 12 ? dateTime.hour - 12 : dateTime.hour;
+    hour = hour == 0 ? 12 : hour;
     final minute = dateTime.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
+    return '$hour:$minute $period';
+  }
+
+  bool _shouldShowDateHeader(
+      DocumentSnapshot previous, DocumentSnapshot current) {
+    final prevTask = previous.data() as Map<String, dynamic>;
+    final currTask = current.data() as Map<String, dynamic>;
+
+    final prevScheduledTime = prevTask['scheduledTime'].toDate();
+    final currScheduledTime = currTask['scheduledTime'].toDate();
+
+    return prevScheduledTime.year != currScheduledTime.year ||
+        prevScheduledTime.month != currScheduledTime.month ||
+        prevScheduledTime.day != currScheduledTime.day;
+  }
+
+  String _formatDateHeader(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
+    final dateToCheck = DateTime(date.year, date.month, date.day);
+
+    if (dateToCheck == today) {
+      return 'Today';
+    } else if (dateToCheck == tomorrow) {
+      return 'Tomorrow';
+    } else {
+      return '${date.day} ${_getMonthName(date.month)} ${date.year}';
+    }
+  }
+
+  String _getMonthName(int month) {
+    const monthNames = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ];
+    return monthNames[month - 1];
   }
 }

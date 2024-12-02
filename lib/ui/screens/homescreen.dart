@@ -77,8 +77,9 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (ctx, result) async {
         final shouldLogout = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
@@ -104,9 +105,13 @@ class _HomeScreenState extends State<HomeScreen>
           Provider.of<AuthViewModel>(context, listen: false).reset();
           Provider.of<TasksViewmodel>(context, listen: false).reset();
           await _auth.signOut();
-          return true;
+          if (context.mounted) {
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/', (route) => false);
+          }
+          // return false;
         }
-        return false;
+        // return false;
       },
       child: Scaffold(
         backgroundColor: AppColors.background,

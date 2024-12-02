@@ -14,6 +14,13 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
+  // Make this method accessible to child widgets
+  void onNavTap(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
   // List of screens to be displayed
   final List<Widget> _screens = const [
     HomeScreen(),
@@ -26,19 +33,13 @@ class _MainScreenState extends State<MainScreen> {
             Center(child: Text('Search Coming Soon'))), // Temporary placeholder
   ];
 
-  void _onNavTap(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: CustomBottomNavigation(
         currentIndex: _currentIndex,
-        onTap: _onNavTap,
+        onTap: onNavTap,
       ),
     );
   }

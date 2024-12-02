@@ -5,6 +5,7 @@ import 'package:markitdone/config/theme.dart';
 import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
 import 'package:markitdone/providers/view_models/tasks_viewmodel.dart';
 import 'package:provider/provider.dart';
+import 'package:markitdone/providers/navigation_provider.dart';
 
 class ScheduleScreen extends StatelessWidget {
   const ScheduleScreen({Key? key}) : super(key: key);
@@ -13,37 +14,7 @@ class ScheduleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        final shouldLogout = await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Confirm Logout'),
-            content: Text('Are you sure you want to logout?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.error,
-                ),
-                child: Text('Logout'),
-              ),
-            ],
-          ),
-        );
-
-        if (shouldLogout == true) {
-          Provider.of<AuthViewModel>(context, listen: false).reset();
-          Provider.of<TasksViewmodel>(context, listen: false).reset();
-          await FirebaseAuth.instance.signOut();
-          if (context.mounted) {
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil('/', (route) => false);
-          }
-          return false;
-        }
+        Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
         return false;
       },
       child: Scaffold(
@@ -53,8 +24,11 @@ class ScheduleScreen extends StatelessWidget {
           backgroundColor: AppColors.background,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
-            color: AppColors.textPrimary,
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              context.read<NavigationProvider>().setIndex(0);
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/main', (route) => false);
+            },
           ),
           title: Text(
             'Schedule',

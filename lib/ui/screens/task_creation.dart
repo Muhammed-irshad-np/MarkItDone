@@ -6,6 +6,7 @@ import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
 import 'package:markitdone/providers/view_models/tasks_viewmodel.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:markitdone/ui/widgets/contact_picker_sheet.dart';
 
 class TaskCreationBottomSheet extends StatefulWidget {
   const TaskCreationBottomSheet({super.key});
@@ -108,24 +109,38 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
   }
 
   Future<void> _pickContact() async {
-    try {
-      bool hasPermission = await _handleContactPermission();
-      if (!hasPermission) {
-        return;
-      }
+    if (!await _handleContactPermission()) return;
 
-      final contact = await FlutterContacts.openExternalPick();
+    try {
+      // Get all contacts
+      final contacts = await FlutterContacts.getContacts(
+        withProperties: true,
+        withPhoto: true,
+      );
+
+      if (!mounted) return;
+
+      // Show custom contact picker dialog
+      final contact = await showModalBottomSheet<Contact>(
+        context: context,
+        backgroundColor: AppColors.surface,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (context) => ContactPickerSheet(contacts: contacts),
+      );
+
       if (contact != null) {
         setState(() {
           _selectedContact = contact;
         });
       }
     } catch (e) {
-      print('Error picking contact: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error accessing contacts: $e'),
+          const SnackBar(
+            content: Text('Error accessing contacts'),
+            backgroundColor: AppColors.error,
           ),
         );
       }

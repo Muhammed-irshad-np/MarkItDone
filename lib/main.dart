@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:markitdone/config/theme.dart';
 
 import 'ui/screens/assigned_task_screen.dart';
+import 'providers/navigation_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +45,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
             create: (context) => AuthViewModel(UserRepository())),
         ChangeNotifierProvider(
-            create: (context) => TasksViewmodel(AddTaskRepository()))
+            create: (context) => TasksViewmodel(AddTaskRepository())),
+        ChangeNotifierProvider(create: (_) => NavigationProvider()),
       ],
       child: MaterialApp(
         title: 'MarkItDone',

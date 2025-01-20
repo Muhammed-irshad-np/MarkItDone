@@ -139,8 +139,8 @@ class _AuthScreenState extends State<AuthScreen>
                 ),
           ),
           const SizedBox(height: 24),
-          if (!viewModel.isOTPSent) _buildPhoneInput(context, viewModel),
-          if (viewModel.isOTPSent) _buildOTPInput(context, viewModel),
+          if (!viewModel.isOTPSent) _buildPhoneInput(context, viewModel, theme),
+          if (viewModel.isOTPSent) _buildOTPInput(context, viewModel, theme),
           const SizedBox(height: 24),
           SizedBox(
             height: 52,
@@ -193,7 +193,7 @@ class _AuthScreenState extends State<AuthScreen>
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.primaryColor,
                 foregroundColor: theme.colorScheme.onPrimary,
-                disabledBackgroundColor: AppColors.darkprimary.withOpacity(0.6),
+                disabledBackgroundColor: theme.primaryColor.withOpacity(0.6),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -225,7 +225,7 @@ class _AuthScreenState extends State<AuthScreen>
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.textDark,
+                                theme.colorScheme.onPrimary,
                               ),
                             ),
                           ),
@@ -266,7 +266,8 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  Widget _buildPhoneInput(BuildContext context, AuthViewModel viewModel) {
+  Widget _buildPhoneInput(
+      BuildContext context, AuthViewModel viewModel, ThemeData theme) {
     return TextFormField(
       controller: _phoneController,
       keyboardType: TextInputType.phone,
@@ -288,7 +289,7 @@ class _AuthScreenState extends State<AuthScreen>
               Container(
                 width: 1,
                 height: 24,
-                color: AppColors.divider,
+                color: theme.dividerColor,
               ),
             ],
           ),
@@ -298,7 +299,8 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  Widget _buildOTPInput(BuildContext context, AuthViewModel viewModel) {
+  Widget _buildOTPInput(
+      BuildContext context, AuthViewModel viewModel, ThemeData theme) {
     return TextFormField(
       controller: _otpController,
       keyboardType: TextInputType.number,
@@ -312,7 +314,7 @@ class _AuthScreenState extends State<AuthScreen>
         hintText: '······',
         counterText: '',
         hintStyle: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: AppColors.darktextSecondary.withOpacity(0.5),
+              color: theme.hintColor.withOpacity(0.5),
               letterSpacing: 8,
             ),
       ),

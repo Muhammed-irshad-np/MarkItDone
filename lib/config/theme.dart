@@ -29,9 +29,11 @@ class AppColors {
 
   // Additional Colors
   static const cardBorder = Color(0xFF3F3F46); // Dark Border
-  static const divider = Color(0xFF3F3F46); // Dark Divider
+  static const darkdivider = Color(0xFF3F3F46); // Dark Divider
   static const inputFill = Color(0xFF2A2A30); // Input Background
   static const border = Color(0xFFE0E0E0); // Light gray border color
+
+  static const lightdivider = Color(0xFFEEF4F9); // Light Divider
 
   // New Accent Colors
   static const accent1 = Color(0xFFFF79C6); // Neon Pink
@@ -50,6 +52,7 @@ ThemeData appTheme() {
     hintColor: AppColors.darktextSecondary,
     cardColor: AppColors.cardBorder,
     shadowColor: AppColors.darkprimary.withOpacity(0.05),
+    dividerColor: AppColors.darkdivider,
 
     // Color Scheme
     colorScheme: const ColorScheme.dark(
@@ -187,6 +190,8 @@ ThemeData lightTheme() {
     shadowColor: AppColors.lightshadow,
     cardColor: AppColors.lightbackground,
     hintColor: AppColors.lighttextSecondary,
+    dividerColor: AppColors.lightdivider,
+    //
     colorScheme: const ColorScheme.dark(
       primary: AppColors.darkprimary,
       secondary: AppColors.darksecondary,
@@ -201,6 +206,31 @@ ThemeData lightTheme() {
     textTheme: TextTheme(
       titleLarge: GoogleFonts.inter(
         fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: AppColors.lighttextPrimary,
+      ),
+       headlineLarge: GoogleFonts.inter(
+        fontSize: 32,
+        fontWeight: FontWeight.bold,
+        color: AppColors.lighttextPrimary,
+        letterSpacing: -0.5,
+      ),
+          headlineMedium: GoogleFonts.inter(
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+        color: AppColors.lighttextPrimary,
+        letterSpacing: -0.3,
+      ),
+      bodyLarge: GoogleFonts.inter(
+        fontSize: 16,
+        color: AppColors.lighttextPrimary,
+      ),
+      bodyMedium: GoogleFonts.inter(
+        fontSize: 14,
+        color: AppColors.lighttextSecondary,
+      ),
+      labelLarge: GoogleFonts.inter(
+        fontSize: 14,
         fontWeight: FontWeight.w600,
         color: AppColors.lighttextPrimary,
       ),

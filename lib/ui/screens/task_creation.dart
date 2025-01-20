@@ -249,7 +249,7 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
               height: 4,
               margin: const EdgeInsets.only(bottom: 20),
               decoration: BoxDecoration(
-                color: AppColors.divider,
+                color: AppColors.darkdivider,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),

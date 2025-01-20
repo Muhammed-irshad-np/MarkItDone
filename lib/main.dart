@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'MarkItDone',
-        theme: lightTheme(),
+        theme: appTheme(),
         debugShowCheckedModeBanner: false,
         initialRoute: initialRoute,
         routes: {

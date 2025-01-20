@@ -8,13 +8,27 @@ class PricingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.darkbackground,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.close,
+              color: AppColors.darktextPrimary,
+            ),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/auth');
+            },
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.only(left: 24, right: 24, top: 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 40),
               Text(
                 'Choose Your Plan',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -32,40 +46,45 @@ class PricingScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 40),
-              _buildPlanCard(
-                context,
-                title: 'Free',
-                price: '0',
-                features: [
-                  'Basic task management',
-                  'Up to 5 team members',
-                  'Simple scheduling',
-                ],
-                isPro: false,
-              ),
-              const SizedBox(height: 16),
-              _buildPlanCard(
-                context,
-                title: 'Pro',
-                price: '9.99',
-                features: [
-                  'Unlimited task management',
-                  'Unlimited team members',
-                  'Advanced scheduling',
-                  'Priority support',
-                  'Custom categories',
-                  'Advanced analytics',
-                ],
-                isPro: true,
-              ),
-              const Spacer(),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/auth');
-                },
-                child: Text(
-                  'Continue with Free Plan',
-                  style: TextStyle(color: AppColors.darktextSecondary),
+              Expanded(
+                child: ListView(
+                  children: [
+                    _buildPlanCard(
+                      context,
+                      title: 'Free',
+                      price: '0',
+                      features: [
+                        'Basic task management',
+                        'Up to 5 team members',
+                        'Simple scheduling',
+                      ],
+                      isPro: false,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildPlanCard(
+                      context,
+                      title: 'Pro',
+                      price: '9.99',
+                      features: [
+                        'Unlimited task management',
+                        'Unlimited team members',
+                        'Advanced scheduling',
+                        'Priority support',
+                        'Custom categories',
+                        'Advanced analytics',
+                      ],
+                      isPro: true,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, '/auth');
+                      },
+                      child: Text(
+                        'Skip',
+                        style: TextStyle(color: AppColors.darktextSecondary),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

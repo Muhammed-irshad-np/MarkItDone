@@ -44,13 +44,13 @@ class TaskListingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.darkbackground,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.darkbackground,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          color: AppColors.textPrimary,
+          color: AppColors.darktextPrimary,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -64,7 +64,7 @@ class TaskListingScreen extends StatelessWidget {
             },
             child: const Text(
               'Done',
-              style: TextStyle(color: AppColors.primary),
+              style: TextStyle(color: AppColors.darkprimary),
             ),
           ),
         ],
@@ -78,7 +78,7 @@ class TaskListingScreen extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(
-                color: AppColors.primary,
+                color: AppColors.darkprimary,
               ),
             );
           }
@@ -101,7 +101,7 @@ class TaskListingScreen extends StatelessWidget {
               child: Text(
                 'No tasks yet',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: AppColors.darktextSecondary,
                     ),
               ),
             );
@@ -127,14 +127,14 @@ class TaskListingScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 6),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.08),
+                          color: AppColors.darkprimary.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
                           date,
                           style:
                               Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: AppColors.primary,
+                                    color: AppColors.darkprimary,
                                     fontWeight: FontWeight.w600,
                                     fontSize: 13,
                                   ),
@@ -173,12 +173,13 @@ class TaskListingScreen extends StatelessWidget {
                                             value! ? 'completed' : 'pending'
                                       });
                                     },
-                                    activeColor: AppColors.primary,
+                                    activeColor: AppColors.darkprimary,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(6),
                                     ),
                                     side: BorderSide(
-                                      color: AppColors.primary.withOpacity(0.5),
+                                      color: AppColors.darkprimary
+                                          .withOpacity(0.5),
                                       width: 1.5,
                                     ),
                                   ),
@@ -200,10 +201,10 @@ class TaskListingScreen extends StatelessWidget {
                                                 taskData['state'] == 'completed'
                                                     ? TextDecoration.lineThrough
                                                     : null,
-                                            color:
-                                                taskData['state'] == 'completed'
-                                                    ? AppColors.textSecondary
-                                                    : AppColors.textPrimary,
+                                            color: taskData['state'] ==
+                                                    'completed'
+                                                ? AppColors.darktextSecondary
+                                                : AppColors.darktextPrimary,
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -217,7 +218,8 @@ class TaskListingScreen extends StatelessWidget {
                                             .textTheme
                                             .bodySmall
                                             ?.copyWith(
-                                              color: AppColors.textSecondary,
+                                              color:
+                                                  AppColors.darktextSecondary,
                                               fontSize: 14,
                                             ),
                                         maxLines: 2,
@@ -234,7 +236,7 @@ class TaskListingScreen extends StatelessWidget {
                                     .textTheme
                                     .bodySmall
                                     ?.copyWith(
-                                      color: AppColors.textSecondary,
+                                      color: AppColors.darktextSecondary,
                                       fontSize: 12,
                                     ),
                               ),

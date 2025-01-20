@@ -18,10 +18,10 @@ class ScheduleScreen extends StatelessWidget {
         return false;
       },
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.darkbackground,
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: AppColors.background,
+          backgroundColor: AppColors.darkbackground,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
@@ -46,7 +46,7 @@ class ScheduleScreen extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
+                child: CircularProgressIndicator(color: AppColors.darkprimary),
               );
             }
 
@@ -58,13 +58,13 @@ class ScheduleScreen extends StatelessWidget {
                     Icon(
                       Icons.event_note_rounded,
                       size: 64,
-                      color: AppColors.textSecondary.withOpacity(0.5),
+                      color: AppColors.darktextSecondary.withOpacity(0.5),
                     ),
                     const SizedBox(height: 16),
                     Text(
                       'No scheduled tasks',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: AppColors.textSecondary,
+                            color: AppColors.darktextSecondary,
                           ),
                     ),
                   ],
@@ -90,14 +90,14 @@ class ScheduleScreen extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 4),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.08),
+                            color: AppColors.darkprimary.withOpacity(0.08),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
                             _formatDateHeader(scheduledTime),
                             style:
                                 Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: AppColors.primary,
+                                      color: AppColors.darkprimary,
                                       fontWeight: FontWeight.w500,
                                     ),
                           ),
@@ -132,7 +132,7 @@ class ScheduleScreen extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.1),
+          color: AppColors.darkprimary.withOpacity(0.1),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(16),
             bottomLeft: Radius.circular(16),
@@ -140,8 +140,8 @@ class ScheduleScreen extends StatelessWidget {
           ),
           border: Border.all(
             color: isToday
-                ? AppColors.primary
-                : AppColors.primary.withOpacity(0.15),
+                ? AppColors.darkprimary
+                : AppColors.darkprimary.withOpacity(0.15),
             width: isToday ? 2 : 1,
           ),
         ),
@@ -169,12 +169,12 @@ class ScheduleScreen extends StatelessWidget {
                                 'state': value! ? 'completed' : 'pending'
                               });
                             },
-                            activeColor: AppColors.primary,
+                            activeColor: AppColors.darkprimary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(6),
                             ),
                             side: BorderSide(
-                              color: AppColors.primary.withOpacity(0.5),
+                              color: AppColors.darkprimary.withOpacity(0.5),
                               width: 1.5,
                             ),
                           ),
@@ -187,7 +187,7 @@ class ScheduleScreen extends StatelessWidget {
                           style:
                               Theme.of(context).textTheme.titleMedium?.copyWith(
                                     fontWeight: FontWeight.w600,
-                                    color: AppColors.textPrimary,
+                                    color: AppColors.darktextPrimary,
                                     decoration: isCompleted
                                         ? TextDecoration.lineThrough
                                         : null,
@@ -204,7 +204,7 @@ class ScheduleScreen extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: isCompleted
-                        ? AppColors.primary.withOpacity(0.1)
+                        ? AppColors.darkprimary.withOpacity(0.1)
                         : AppColors.warning.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -212,7 +212,7 @@ class ScheduleScreen extends StatelessWidget {
                     isCompleted ? 'Completed' : 'Pending',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: isCompleted
-                              ? AppColors.primary
+                              ? AppColors.darkprimary
                               : AppColors.warning,
                           fontWeight: FontWeight.w500,
                           fontSize: 11,
@@ -226,7 +226,7 @@ class ScheduleScreen extends StatelessWidget {
               Text(
                 task['description'],
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: AppColors.darktextSecondary,
                       decoration:
                           isCompleted ? TextDecoration.lineThrough : null,
                     ),
@@ -241,15 +241,17 @@ class ScheduleScreen extends StatelessWidget {
                 Icon(
                   Icons.calendar_today_outlined,
                   size: 14,
-                  color: isToday ? AppColors.primary : AppColors.textSecondary,
+                  color: isToday
+                      ? AppColors.darkprimary
+                      : AppColors.darktextSecondary,
                 ),
                 const SizedBox(width: 4),
                 Text(
                   'Scheduled: ${_formatDateTime(scheduledTime)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: isToday
-                            ? AppColors.primary
-                            : AppColors.textSecondary,
+                            ? AppColors.darkprimary
+                            : AppColors.darktextSecondary,
                         fontSize: 12,
                         fontWeight: isToday ? FontWeight.w600 : null,
                       ),

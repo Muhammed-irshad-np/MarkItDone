@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen>
       vsync: this,
     );
     _colorAnimation = ColorTween(
-      begin: AppColors.textPrimary,
+      begin: AppColors.darktextPrimary,
       end: Colors.red,
     ).animate(_notificationController);
   }
@@ -123,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen>
         // return false;
       },
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.darkbackground,
         body: SafeArea(
           child: CustomScrollView(
             slivers: [
@@ -152,16 +152,16 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildAppBar(BuildContext context) {
     return SliverAppBar(
       floating: true,
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.darkbackground,
       title: Consumer<AuthViewModel>(
         builder: (context, authVM, _) {
           return Row(
             children: [
               CircleAvatar(
-                backgroundColor: AppColors.primary.withOpacity(0.1),
+                backgroundColor: AppColors.darkprimary.withOpacity(0.1),
                 child: Text(
                   authVM.name.isNotEmpty ? authVM.name[0].toUpperCase() : 'U',
-                  style: TextStyle(color: AppColors.primary),
+                  style: TextStyle(color: AppColors.darkprimary),
                 ),
               ),
               const SizedBox(width: 12),
@@ -171,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen>
                   Text(
                     'Hello,',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.textSecondary,
+                          color: AppColors.darktextSecondary,
                         ),
                   ),
                   Text(
@@ -188,9 +188,9 @@ class _HomeScreenState extends State<HomeScreen>
         PopupMenuButton<String>(
           icon: Icon(
             Icons.more_vert,
-            color: AppColors.textPrimary,
+            color: AppColors.darktextPrimary,
           ),
-          color: AppColors.surface,
+          color: AppColors.darksurface,
           elevation: 2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -246,7 +246,10 @@ class _HomeScreenState extends State<HomeScreen>
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)],
+              colors: [
+                AppColors.darkprimary,
+                AppColors.darkprimary.withOpacity(0.8)
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),

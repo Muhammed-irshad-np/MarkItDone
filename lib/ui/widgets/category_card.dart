@@ -73,7 +73,7 @@ class _CategoryCardState extends State<CategoryCard>
         onTap: widget.onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: AppColors.darksurface,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: AppColors.cardBorder),
             boxShadow: [
@@ -130,7 +130,7 @@ class _CategoryCardState extends State<CategoryCard>
               Text(
                 widget.subtitle,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: AppColors.darktextSecondary,
                     ),
                 textAlign: TextAlign.center,
                 maxLines: 1,

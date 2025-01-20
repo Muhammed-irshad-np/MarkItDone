@@ -16,13 +16,13 @@ class AssignedTaskScreen extends StatelessWidget {
         Provider.of<AuthViewModel>(context, listen: false).phoneNumber;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.darkbackground,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.darkbackground,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          color: AppColors.textPrimary,
+          color: AppColors.darktextPrimary,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -49,13 +49,13 @@ class AssignedTaskScreen extends StatelessWidget {
                   Icon(
                     Icons.assignment_outlined,
                     size: 64,
-                    color: AppColors.textSecondary.withOpacity(0.5),
+                    color: AppColors.darktextSecondary.withOpacity(0.5),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'No assigned tasks',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: AppColors.textSecondary,
+                          color: AppColors.darktextSecondary,
                           fontWeight: FontWeight.w500,
                         ),
                   ),
@@ -88,14 +88,14 @@ class AssignedTaskScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.08),
+                          color: AppColors.darkprimary.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
                           _formatDateHeader(scheduledTime),
                           style:
                               Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: AppColors.primary,
+                                    color: AppColors.darkprimary,
                                     fontWeight: FontWeight.w500,
                                   ),
                         ),
@@ -116,15 +116,15 @@ class AssignedTaskScreen extends StatelessWidget {
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
                               color: isCompleted
-                                  ? AppColors.primary.withOpacity(0.15)
-                                  : AppColors.primary.withOpacity(0.1),
+                                  ? AppColors.darkprimary.withOpacity(0.15)
+                                  : AppColors.darkprimary.withOpacity(0.1),
                               borderRadius: const BorderRadius.only(
                                 topRight: Radius.circular(16),
                                 bottomLeft: Radius.circular(16),
                                 bottomRight: Radius.circular(16),
                               ),
                               border: Border.all(
-                                color: AppColors.primary.withOpacity(0.15),
+                                color: AppColors.darkprimary.withOpacity(0.15),
                                 width: 1,
                               ),
                             ),
@@ -141,7 +141,7 @@ class AssignedTaskScreen extends StatelessWidget {
                                       child: Text(
                                         assigneeName[0].toUpperCase(),
                                         style: TextStyle(
-                                          color: AppColors.primary,
+                                          color: AppColors.darkprimary,
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -154,7 +154,7 @@ class AssignedTaskScreen extends StatelessWidget {
                                           .textTheme
                                           .bodyMedium
                                           ?.copyWith(
-                                            color: AppColors.primary,
+                                            color: AppColors.darkprimary,
                                             fontWeight: FontWeight.w600,
                                           ),
                                     ),
@@ -166,7 +166,8 @@ class AssignedTaskScreen extends StatelessWidget {
                                       ),
                                       decoration: BoxDecoration(
                                         color: isCompleted
-                                            ? AppColors.primary.withOpacity(0.1)
+                                            ? AppColors.darkprimary
+                                                .withOpacity(0.1)
                                             : AppColors.warning
                                                 .withOpacity(0.1),
                                         borderRadius: BorderRadius.circular(12),
@@ -178,7 +179,7 @@ class AssignedTaskScreen extends StatelessWidget {
                                             .bodySmall
                                             ?.copyWith(
                                               color: isCompleted
-                                                  ? AppColors.primary
+                                                  ? AppColors.darkprimary
                                                   : AppColors.warning,
                                               fontWeight: FontWeight.w500,
                                               fontSize: 11,
@@ -192,7 +193,7 @@ class AssignedTaskScreen extends StatelessWidget {
                                       iconSize: 20,
                                       padding: EdgeInsets.zero,
                                       constraints: const BoxConstraints(),
-                                      color: AppColors.textSecondary,
+                                      color: AppColors.darktextSecondary,
                                       onPressed: () => _showReassignDialog(
                                         context,
                                         tasks[index].id,
@@ -211,7 +212,7 @@ class AssignedTaskScreen extends StatelessWidget {
                                       .titleMedium
                                       ?.copyWith(
                                         fontWeight: FontWeight.w600,
-                                        color: AppColors.textPrimary,
+                                        color: AppColors.darktextPrimary,
                                       ),
                                 ),
                                 if (taskData['description']?.isNotEmpty ==
@@ -223,7 +224,7 @@ class AssignedTaskScreen extends StatelessWidget {
                                         .textTheme
                                         .bodyMedium
                                         ?.copyWith(
-                                          color: AppColors.textSecondary,
+                                          color: AppColors.darktextSecondary,
                                         ),
                                     maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
@@ -237,7 +238,7 @@ class AssignedTaskScreen extends StatelessWidget {
                                     Icon(
                                       Icons.access_time,
                                       size: 14,
-                                      color: AppColors.textSecondary,
+                                      color: AppColors.darktextSecondary,
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
@@ -246,7 +247,7 @@ class AssignedTaskScreen extends StatelessWidget {
                                           .textTheme
                                           .bodySmall
                                           ?.copyWith(
-                                            color: AppColors.textSecondary,
+                                            color: AppColors.darktextSecondary,
                                             fontSize: 12,
                                           ),
                                     ),
@@ -255,7 +256,7 @@ class AssignedTaskScreen extends StatelessWidget {
                                       Icon(
                                         Icons.done_all,
                                         size: 14,
-                                        color: AppColors.primary,
+                                        color: AppColors.darkprimary,
                                       ),
                                     ],
                                   ],
@@ -331,7 +332,7 @@ class AssignedTaskScreen extends StatelessWidget {
       // Show custom contact picker dialog
       final selectedContact = await showModalBottomSheet<Contact>(
         context: context,
-        backgroundColor: AppColors.surface,
+        backgroundColor: AppColors.darksurface,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
@@ -356,7 +357,7 @@ class AssignedTaskScreen extends StatelessWidget {
             SnackBar(
               content: Text(
                   'Task reassigned from $currentAssignee to ${selectedContact.displayName}'),
-              backgroundColor: AppColors.primary,
+              backgroundColor: AppColors.darkprimary,
             ),
           );
         }

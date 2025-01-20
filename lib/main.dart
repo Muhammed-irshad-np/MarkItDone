@@ -50,9 +50,11 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'MarkItDone',
-        theme: appTheme(),
+        theme: lightTheme(),
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
+        darkTheme: appTheme(),
+        themeMode: ThemeMode.system,
         routes: {
           '/': (context) => AuthScreen(),
           '/register': (context) => const RegisterAndPermissionScreen(),

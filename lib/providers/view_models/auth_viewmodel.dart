@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:markitdone/config/theme.dart';
 import 'package:markitdone/data/repositories/user_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -10,6 +11,7 @@ class AuthViewModel extends ChangeNotifier {
   String _verificationId = '';
   bool _isOTPSent = false;
   String? documentId = '';
+  bool isLoading = false;
 
   String get phoneNumber => _phoneNumber ?? '';
   String get name => _name ?? '';
@@ -21,6 +23,11 @@ class AuthViewModel extends ChangeNotifier {
   void setUserData(String phone, {String? name}) {
     _phoneNumber = phone;
     _name = name;
+    notifyListeners();
+  }
+
+  void setIsOTPSent(bool value) {
+    _isOTPSent = value;
     notifyListeners();
   }
 
@@ -47,12 +54,49 @@ class AuthViewModel extends ChangeNotifier {
 
   // Method to verify the phone number
   Future<void> verifyPhoneNumber() async {
+    isLoading = true;
+    notifyListeners();
+
     await _userRepository.sendOTP(_phoneNumber!, (String verificationId) {
       _verificationId =
           verificationId; // Store the verification ID for later use
       _isOTPSent = true; // OTP has been sent successfully
       notifyListeners();
     });
+  }
+
+  Future<void> handleOtpSubmit(
+    BuildContext context,
+    String otp,
+  ) async {
+    isLoading = true;
+    notifyListeners();
+    try {
+      final user = await signInWithOTP(otp);
+
+      if (user != null) {
+        final res = await registerorloginuser(context);
+        if (res['documentId'] != null) {
+          if (res['isFirstTimeUser']) {
+            Navigator.pushReplacementNamed(context, '/register');
+          } else {
+            Navigator.pushReplacementNamed(context, '/main');
+          }
+        }
+      }
+    } catch (e) {
+      isLoading = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Authentication failed: ${e.toString()}'),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } finally {
+      // isLoading = false;
+      notifyListeners();
+    }
   }
 
   // Method to sign in with the OTP

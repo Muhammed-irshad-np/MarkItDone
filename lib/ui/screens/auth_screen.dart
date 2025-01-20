@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:markitdone/config/theme.dart';
 import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
@@ -14,7 +16,6 @@ class _AuthScreenState extends State<AuthScreen>
     with SingleTickerProviderStateMixin {
   final _phoneController = TextEditingController();
   final _otpController = TextEditingController();
-  bool _isLoading = false;
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
 
@@ -37,42 +38,6 @@ class _AuthScreenState extends State<AuthScreen>
     _otpController.dispose();
     _fadeController.dispose();
     super.dispose();
-  }
-
-  Future<void> _handleOtpSubmit(AuthViewModel viewModel) async {
-    setState(() => _isLoading = true);
-    try {
-      final user = await viewModel.signInWithOTP(_otpController.text);
-
-      if (user != null && mounted) {
-        final res = await viewModel.registerorloginuser(context);
-        if (res['documentId'] != null) {
-          if (res['isFirstTimeUser']) {
-            if (mounted) {
-              Navigator.pushReplacementNamed(context, '/register');
-            }
-          } else {
-            if (mounted) {
-              Navigator.pushReplacementNamed(context, '/main');
-            }
-          }
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Authentication failed: ${e.toString()}'),
-            backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    }
   }
 
   @override
@@ -177,11 +142,11 @@ class _AuthScreenState extends State<AuthScreen>
           SizedBox(
             height: 52,
             child: ElevatedButton(
-              onPressed: _isLoading
+              onPressed: viewModel.isLoading
                   ? null
                   : () async {
                       if (viewModel.isOTPSent) {
-                        await _handleOtpSubmit(viewModel);
+                        viewModel.handleOtpSubmit(context, _otpController.text);
                       } else {
                         if (_phoneController.text.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -192,12 +157,22 @@ class _AuthScreenState extends State<AuthScreen>
                           );
                           return;
                         }
-                        setState(() => _isLoading = true);
                         try {
                           viewModel.setPhoneNumber(_phoneController.text);
                           await viewModel.verifyPhoneNumber();
+
+                          // Wait for animation to complete before updating loading state
+                          await Future.delayed(
+                              const Duration(milliseconds: 100));
+                          viewModel.setIsOTPSent(true);
+                          viewModel.isLoading = false;
+                          viewModel.notifyListeners();
+                          // if (mounted) {
+                          //   setState(() => _isLoading = false);
+                          // }
                         } catch (e) {
                           if (mounted) {
+                            viewModel.isLoading = false;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('Error: ${e.toString()}'),
@@ -206,9 +181,9 @@ class _AuthScreenState extends State<AuthScreen>
                             );
                           }
                         } finally {
-                          if (mounted) {
-                            setState(() => _isLoading = false);
-                          }
+                          // if (mounted) {
+                          //   setState(() => _isLoading = false);
+                          // }
                         }
                       }
                     },
@@ -226,6 +201,7 @@ class _AuthScreenState extends State<AuthScreen>
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 transitionBuilder: (Widget child, Animation<double> animation) {
+                  log('isLoading: ${viewModel.isLoading}');
                   return FadeTransition(
                     opacity: animation,
                     child: ScaleTransition(
@@ -234,9 +210,9 @@ class _AuthScreenState extends State<AuthScreen>
                     ),
                   );
                 },
-                child: _isLoading
+                child: viewModel.isLoading
                     ? Row(
-                        key: const ValueKey('loading'),
+                        // key: const ValueKey('loading'),
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -263,7 +239,7 @@ class _AuthScreenState extends State<AuthScreen>
                         ],
                       )
                     : Row(
-                        key: const ValueKey('normal'),
+                        // key: const ValueKey('normal'),
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(

@@ -44,7 +44,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.darkbackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -83,7 +83,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Text(
             item.title,
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: AppColors.textPrimary,
+                  color: AppColors.darktextPrimary,
                   fontWeight: FontWeight.bold,
                 ),
             textAlign: TextAlign.center,
@@ -92,7 +92,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Text(
             item.description,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppColors.textSecondary,
+                  color: AppColors.darktextSecondary,
                 ),
             textAlign: TextAlign.center,
           ),
@@ -126,7 +126,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   },
                   child: Text(
                     'Previous',
-                    style: TextStyle(color: AppColors.textSecondary),
+                    style: TextStyle(color: AppColors.darktextSecondary),
                   ),
                 ),
               const Spacer(),
@@ -142,7 +142,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: AppColors.darkprimary,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,
                     vertical: 16,
@@ -168,8 +168,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       width: _currentPage == index ? 24 : 8,
       decoration: BoxDecoration(
         color: _currentPage == index
-            ? AppColors.primary
-            : AppColors.textSecondary.withOpacity(0.3),
+            ? AppColors.darkprimary
+              : AppColors.darktextSecondary.withOpacity(0.3),
         borderRadius: BorderRadius.circular(4),
       ),
     );

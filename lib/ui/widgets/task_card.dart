@@ -98,7 +98,7 @@ class TaskCard extends StatelessWidget {
                     visible: !fromCompleted,
                     child: IconButton(
                       icon: const Icon(Icons.person_outline,
-                          color: AppColors.textSecondary),
+                          color: AppColors.darktextSecondary),
                       onPressed: onReassign,
                     ),
                   ),
@@ -135,7 +135,7 @@ class TaskCard extends StatelessWidget {
           const Icon(
             Icons.calendar_today_outlined,
             size: 14,
-            color: AppColors.textSecondary,
+            color: AppColors.darktextSecondary,
           ),
           const SizedBox(width: 4),
           Text(

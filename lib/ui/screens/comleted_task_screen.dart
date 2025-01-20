@@ -10,13 +10,13 @@ class CompletedTaskScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.darkbackground,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.darkbackground,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          color: AppColors.textPrimary,
+          color: AppColors.darktextPrimary,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -32,7 +32,7 @@ class CompletedTaskScreen extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
+              child: CircularProgressIndicator(color: AppColors.darkprimary),
             );
           }
 
@@ -44,13 +44,13 @@ class CompletedTaskScreen extends StatelessWidget {
                   Icon(
                     Icons.task_outlined,
                     size: 64,
-                    color: AppColors.textSecondary.withOpacity(0.5),
+                    color: AppColors.darktextSecondary.withOpacity(0.5),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'No completed tasks yet',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: AppColors.textSecondary,
+                          color: AppColors.darktextSecondary,
                         ),
                   ),
                 ],
@@ -79,7 +79,7 @@ class CompletedTaskScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.08),
+                          color: AppColors.darkprimary.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
@@ -87,7 +87,7 @@ class CompletedTaskScreen extends StatelessWidget {
                               isScheduled ? scheduledTime : createdTime),
                           style:
                               Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: AppColors.primary,
+                                    color: AppColors.darkprimary,
                                     fontWeight: FontWeight.w500,
                                   ),
                         ),
@@ -121,14 +121,14 @@ class CompletedTaskScreen extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.05),
+          color: AppColors.darkprimary.withOpacity(0.05),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(16),
             bottomLeft: Radius.circular(16),
             bottomRight: Radius.circular(16),
           ),
           border: Border.all(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppColors.darkprimary.withOpacity(0.1),
             width: 1,
           ),
         ),
@@ -141,13 +141,13 @@ class CompletedTaskScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppColors.darkprimary.withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.check,
                     size: 16,
-                    color: AppColors.primary,
+                    color: AppColors.darkprimary,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -156,7 +156,7 @@ class CompletedTaskScreen extends StatelessWidget {
                     task['title'] ?? 'Untitled Task',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textSecondary,
+                          color: AppColors.darktextSecondary,
                         ),
                   ),
                 ),
@@ -169,7 +169,7 @@ class CompletedTaskScreen extends StatelessWidget {
                 child: Text(
                   task['description'],
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textSecondary.withOpacity(0.7),
+                        color: AppColors.darktextSecondary.withOpacity(0.7),
                       ),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
@@ -186,7 +186,7 @@ class CompletedTaskScreen extends StatelessWidget {
                       ? Icons.calendar_today_outlined
                       : Icons.access_time,
                   size: 14,
-                  color: AppColors.textSecondary,
+                  color: AppColors.darktextSecondary,
                 ),
                 const SizedBox(width: 4),
                 Text(
@@ -194,7 +194,7 @@ class CompletedTaskScreen extends StatelessWidget {
                       ? 'Completed at ${_formatTime(timeToShow)}'
                       : 'Completed at ${_formatTime(timeToShow)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: AppColors.darktextSecondary,
                         fontSize: 12,
                       ),
                 ),
@@ -202,7 +202,7 @@ class CompletedTaskScreen extends StatelessWidget {
                 Icon(
                   Icons.done_all,
                   size: 14,
-                  color: AppColors.primary,
+                  color: AppColors.darkprimary,
                 ),
               ],
             ),

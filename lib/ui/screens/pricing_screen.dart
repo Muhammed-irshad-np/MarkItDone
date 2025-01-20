@@ -7,7 +7,7 @@ class PricingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.darkbackground,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -18,7 +18,7 @@ class PricingScreen extends StatelessWidget {
               Text(
                 'Choose Your Plan',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: AppColors.textPrimary,
+                      color: AppColors.darktextPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                 textAlign: TextAlign.center,
@@ -27,7 +27,7 @@ class PricingScreen extends StatelessWidget {
               Text(
                 'Select the perfect plan for your needs',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: AppColors.darktextSecondary,
                     ),
                 textAlign: TextAlign.center,
               ),
@@ -65,7 +65,7 @@ class PricingScreen extends StatelessWidget {
                 },
                 child: Text(
                   'Continue with Free Plan',
-                  style: TextStyle(color: AppColors.textSecondary),
+                  style: TextStyle(color: AppColors.darktextSecondary),
                 ),
               ),
             ],
@@ -85,10 +85,12 @@ class PricingScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: isPro ? AppColors.primary.withOpacity(0.1) : AppColors.surface,
+        color: isPro
+            ? AppColors.darkprimary.withOpacity(0.1)
+            : AppColors.darksurface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isPro ? AppColors.primary : AppColors.cardBorder,
+          color: isPro ? AppColors.darkprimary : AppColors.cardBorder,
           width: 2,
         ),
       ),
@@ -100,7 +102,9 @@ class PricingScreen extends StatelessWidget {
               Text(
                 title,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: isPro ? AppColors.primary : AppColors.textPrimary,
+                      color: isPro
+                          ? AppColors.darkprimary
+                          : AppColors.darktextPrimary,
                       fontWeight: FontWeight.bold,
                     ),
               ),
@@ -112,7 +116,7 @@ class PricingScreen extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: AppColors.darkprimary,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -132,8 +136,9 @@ class PricingScreen extends StatelessWidget {
                 TextSpan(
                   text: '\$$price',
                   style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                        color:
-                            isPro ? AppColors.primary : AppColors.textPrimary,
+                        color: isPro
+                            ? AppColors.darkprimary
+                            : AppColors.darktextPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                 ),
@@ -141,7 +146,7 @@ class PricingScreen extends StatelessWidget {
                   TextSpan(
                     text: '/month',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: AppColors.textSecondary,
+                          color: AppColors.darktextSecondary,
                         ),
                   ),
               ],
@@ -154,15 +159,16 @@ class PricingScreen extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.check_circle_outline,
-                      color:
-                          isPro ? AppColors.primary : AppColors.textSecondary,
+                      color: isPro
+                          ? AppColors.darkprimary
+                          : AppColors.darktextSecondary,
                       size: 20,
                     ),
                     const SizedBox(width: 12),
                     Text(
                       feature,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppColors.textPrimary,
+                            color: AppColors.darktextPrimary,
                           ),
                     ),
                   ],
@@ -177,7 +183,7 @@ class PricingScreen extends StatelessWidget {
                   // Implement purchase flow
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: AppColors.darkprimary,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: Text(

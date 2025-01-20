@@ -17,11 +17,11 @@ class CustomBottomNavigation extends StatelessWidget {
     return Container(
       height: 88, // Increased height for better touch targets
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.darksurface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.08),
+            color: AppColors.darkprimary.withOpacity(0.08),
             blurRadius: 20,
             offset: const Offset(0, -4),
           ),
@@ -96,11 +96,11 @@ class CustomBottomNavigation extends StatelessWidget {
           height: 64,
           width: 64,
           decoration: BoxDecoration(
-            color: AppColors.primary,
+            color: AppColors.darkprimary,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.3),
+                color: AppColors.darkprimary.withOpacity(0.3),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -140,12 +140,16 @@ class CustomBottomNavigation extends StatelessWidget {
                 duration: const Duration(milliseconds: 200),
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.primary.withOpacity(0.1) : Colors.transparent,
+                  color: isSelected
+                      ? AppColors.darkprimary.withOpacity(0.1)
+                      : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   icon,
-                  color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                  color: isSelected
+                      ? AppColors.darkprimary
+                      : AppColors.darktextSecondary,
                   size: 24,
                 ),
               ),
@@ -153,8 +157,11 @@ class CustomBottomNavigation extends StatelessWidget {
               Text(
                 label,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: isSelected ? AppColors.primary : AppColors.textSecondary,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                      color: isSelected
+                          ? AppColors.darkprimary
+                          : AppColors.darktextSecondary,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.normal,
                     ),
               ),
             ],
@@ -163,4 +170,4 @@ class CustomBottomNavigation extends StatelessWidget {
       ),
     );
   }
-} 
+}

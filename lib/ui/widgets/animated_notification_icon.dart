@@ -33,7 +33,7 @@ class _AnimatedNotificationIconState extends State<AnimatedNotificationIcon>
     );
 
     _colorAnimation = ColorTween(
-      begin: AppColors.textPrimary,
+      begin: AppColors.darktextPrimary,
       end: Colors.red,
     ).animate(CurvedAnimation(
       parent: _controller,

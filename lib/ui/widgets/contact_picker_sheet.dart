@@ -48,12 +48,12 @@ class _ContactPickerSheetState extends State<ContactPickerSheet> {
               Text(
                 'Select Contact',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: AppColors.textPrimary,
+                      color: AppColors.darktextPrimary,
                       fontWeight: FontWeight.bold,
                     ),
               ),
               IconButton(
-                icon: const Icon(Icons.close, color: AppColors.textPrimary),
+                icon: const Icon(Icons.close, color: AppColors.darktextPrimary),
                 onPressed: () => Navigator.pop(context),
               ),
             ],
@@ -64,11 +64,12 @@ class _ContactPickerSheetState extends State<ContactPickerSheet> {
           TextField(
             controller: _searchController,
             onChanged: _filterContacts,
-            style: TextStyle(color: AppColors.textPrimary),
+            style: TextStyle(color: AppColors.darktextPrimary),
             decoration: InputDecoration(
               hintText: 'Search contacts...',
-              hintStyle: TextStyle(color: AppColors.textSecondary),
-              prefixIcon: Icon(Icons.search, color: AppColors.textSecondary),
+              hintStyle: TextStyle(color: AppColors.darktextSecondary),
+              prefixIcon:
+                  Icon(Icons.search, color: AppColors.darktextSecondary),
               filled: true,
               fillColor: AppColors.inputFill,
               border: OutlineInputBorder(
@@ -88,11 +89,11 @@ class _ContactPickerSheetState extends State<ContactPickerSheet> {
                 return ListTile(
                   onTap: () => Navigator.pop(context, contact),
                   leading: CircleAvatar(
-                    backgroundColor: AppColors.primary.withOpacity(0.1),
+                    backgroundColor: AppColors.darkprimary.withOpacity(0.1),
                     child: Text(
                       contact.displayName[0].toUpperCase(),
                       style: TextStyle(
-                        color: AppColors.primary,
+                        color: AppColors.darkprimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -100,14 +101,14 @@ class _ContactPickerSheetState extends State<ContactPickerSheet> {
                   title: Text(
                     contact.displayName,
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: AppColors.darktextPrimary,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   subtitle: contact.phones.isNotEmpty
                       ? Text(
                           contact.phones.first.number,
-                          style: TextStyle(color: AppColors.textSecondary),
+                          style: TextStyle(color: AppColors.darktextSecondary),
                         )
                       : null,
                 );
@@ -118,4 +119,4 @@ class _ContactPickerSheetState extends State<ContactPickerSheet> {
       ),
     );
   }
-} 
+}

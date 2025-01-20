@@ -16,13 +16,13 @@ class PersonalTaskScreen extends StatelessWidget {
         Provider.of<AuthViewModel>(context, listen: false).phoneNumber;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.darkbackground,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.darkbackground,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          color: AppColors.textPrimary,
+          color: AppColors.darktextPrimary,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -35,7 +35,7 @@ class PersonalTaskScreen extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-                child: CircularProgressIndicator(color: AppColors.primary));
+                child: CircularProgressIndicator(color: AppColors.darkprimary));
           }
 
           if (snapshot.hasError) {
@@ -63,13 +63,13 @@ class PersonalTaskScreen extends StatelessWidget {
                   Icon(
                     Icons.task_outlined,
                     size: 64,
-                    color: AppColors.textSecondary.withOpacity(0.5),
+                    color: AppColors.darktextSecondary.withOpacity(0.5),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'No personal tasks yet',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: AppColors.textSecondary,
+                          color: AppColors.darktextSecondary,
                         ),
                   ),
                 ],
@@ -95,14 +95,14 @@ class PersonalTaskScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.08),
+                          color: AppColors.darkprimary.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
                           _formatDateHeader(scheduledTime),
                           style:
                               Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: AppColors.primary,
+                                    color: AppColors.darkprimary,
                                     fontWeight: FontWeight.w500,
                                   ),
                         ),
@@ -172,14 +172,14 @@ class PersonalTaskScreen extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.1),
+          color: AppColors.darkprimary.withOpacity(0.1),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(16),
             bottomLeft: Radius.circular(16),
             bottomRight: Radius.circular(16),
           ),
           border: Border.all(
-            color: AppColors.primary.withOpacity(0.15),
+            color: AppColors.darkprimary.withOpacity(0.15),
             width: 1,
           ),
         ),
@@ -207,12 +207,12 @@ class PersonalTaskScreen extends StatelessWidget {
                                 'state': value! ? 'completed' : 'pending'
                               });
                             },
-                            activeColor: AppColors.primary,
+                            activeColor: AppColors.darkprimary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(6),
                             ),
                             side: BorderSide(
-                              color: AppColors.primary.withOpacity(0.5),
+                              color: AppColors.darkprimary.withOpacity(0.5),
                               width: 1.5,
                             ),
                           ),
@@ -230,7 +230,7 @@ class PersonalTaskScreen extends StatelessWidget {
                                   .titleMedium
                                   ?.copyWith(
                                     fontWeight: FontWeight.w600,
-                                    color: AppColors.textPrimary,
+                                    color: AppColors.darktextPrimary,
                                     decoration: isCompleted
                                         ? TextDecoration.lineThrough
                                         : null,
@@ -244,7 +244,7 @@ class PersonalTaskScreen extends StatelessWidget {
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary.withOpacity(0.1),
+                                  color: AppColors.darkprimary.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Text(
@@ -253,7 +253,7 @@ class PersonalTaskScreen extends StatelessWidget {
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                        color: AppColors.primary,
+                                        color: AppColors.darkprimary,
                                         fontSize: 10,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -270,7 +270,7 @@ class PersonalTaskScreen extends StatelessWidget {
                     IconButton(
                       icon: const Icon(Icons.person_add_outlined),
                       iconSize: 20,
-                      color: AppColors.textSecondary,
+                      color: AppColors.darktextSecondary,
                       onPressed: () => _showAssignDialog(context, taskId),
                       tooltip: 'Assign task',
                     ),
@@ -281,7 +281,7 @@ class PersonalTaskScreen extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: isCompleted
-                            ? AppColors.primary.withOpacity(0.1)
+                            ? AppColors.darkprimary.withOpacity(0.1)
                             : AppColors.warning.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -289,7 +289,7 @@ class PersonalTaskScreen extends StatelessWidget {
                         isCompleted ? 'Completed' : 'Pending',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: isCompleted
-                                  ? AppColors.primary
+                                  ? AppColors.darkprimary
                                   : AppColors.warning,
                               fontWeight: FontWeight.w500,
                               fontSize: 11,
@@ -305,7 +305,7 @@ class PersonalTaskScreen extends StatelessWidget {
               Text(
                 task['description'],
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: AppColors.darktextSecondary,
                     ),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
@@ -320,7 +320,7 @@ class PersonalTaskScreen extends StatelessWidget {
                       ? Icons.calendar_today_outlined
                       : Icons.access_time,
                   size: 14,
-                  color: AppColors.textSecondary,
+                  color: AppColors.darktextSecondary,
                 ),
                 const SizedBox(width: 4),
                 Text(
@@ -328,7 +328,7 @@ class PersonalTaskScreen extends StatelessWidget {
                       ? 'Scheduled: ${_formatTime(timeToShow)}'
                       : 'Created: ${_formatTime(timeToShow)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: AppColors.darktextSecondary,
                         fontSize: 12,
                       ),
                 ),
@@ -386,7 +386,7 @@ class PersonalTaskScreen extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Task assigned to ${contact.displayName}'),
-              backgroundColor: AppColors.primary,
+              backgroundColor: AppColors.darkprimary,
             ),
           );
         }

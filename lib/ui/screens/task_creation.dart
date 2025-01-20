@@ -15,7 +15,7 @@ class TaskCreationBottomSheet extends StatefulWidget {
     return showModalBottomSheet<Map<String, dynamic>>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.darksurface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -123,7 +123,7 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
       // Show custom contact picker dialog
       final contact = await showModalBottomSheet<Contact>(
         context: context,
-        backgroundColor: AppColors.surface,
+        backgroundColor: AppColors.darksurface,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
@@ -173,26 +173,27 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
           Icon(
             icon,
             size: 16,
-            color: isSelected ? AppColors.textLight : AppColors.textPrimary,
+            color: isSelected ? AppColors.textDark : AppColors.darktextPrimary,
           ),
           const SizedBox(width: 8),
           Text(
             label,
             style: TextStyle(
-              color: isSelected ? AppColors.textLight : AppColors.textPrimary,
+              color:
+                  isSelected ? AppColors.textDark : AppColors.darktextPrimary,
             ),
           ),
         ],
       ),
       selected: isSelected,
       onSelected: (bool selected) => _onChipTap(value),
-      backgroundColor: AppColors.surface,
-      selectedColor: AppColors.primary,
-      checkmarkColor: AppColors.textLight,
+      backgroundColor: AppColors.darksurface,
+      selectedColor: AppColors.darkprimary,
+      checkmarkColor: AppColors.textDark,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
         side: BorderSide(
-          color: isSelected ? AppColors.primary : AppColors.cardBorder,
+          color: isSelected ? AppColors.darkprimary : AppColors.cardBorder,
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -248,7 +249,7 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
               height: 4,
               margin: const EdgeInsets.only(bottom: 20),
               decoration: BoxDecoration(
-                color: AppColors.divider,
+                color: AppColors.darkdivider,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -263,7 +264,7 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
               ),
               IconButton(
                 icon: const Icon(Icons.check),
-                color: AppColors.primary,
+                color: AppColors.darkprimary,
                 onPressed: () async {
                   if (_validateTask()) {
                     try {
@@ -331,7 +332,7 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                     hintText: 'What needs to be done?',
                     prefixIcon: Icon(
                       Icons.check_circle_outline,
-                      color: AppColors.textSecondary,
+                      color: AppColors.darktextSecondary,
                     ),
                   ),
                   style: Theme.of(context).textTheme.bodyLarge,
@@ -397,11 +398,11 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 16, color: AppColors.primary),
+              Icon(icon, size: 16, color: AppColors.darkprimary),
               const SizedBox(width: 8),
               Text(
                 text,
-                style: TextStyle(color: AppColors.textPrimary),
+                style: TextStyle(color: AppColors.darktextPrimary),
               ),
             ],
           ),

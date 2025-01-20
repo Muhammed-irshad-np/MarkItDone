@@ -43,9 +43,11 @@ class _AuthScreenState extends State<AuthScreen>
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<AuthViewModel>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      // backgroundColor: AppColors.darkbackground,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
@@ -53,11 +55,11 @@ class _AuthScreenState extends State<AuthScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 60),
-              _buildLogo(),
+              _buildLogo(theme),
               const SizedBox(height: 32),
-              _buildHeader(context),
+              _buildHeader(context, theme),
               const SizedBox(height: 48),
-              _buildAuthForm(context, viewModel),
+              _buildAuthForm(context, viewModel, theme),
             ],
           ),
         ),
@@ -65,22 +67,22 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  Widget _buildLogo() {
+  Widget _buildLogo(ThemeData theme) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
+        color: theme.primaryColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Icon(
         Icons.check_circle_rounded,
         size: 56,
-        color: AppColors.primary,
+        color: theme.primaryColor,
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, ThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -88,30 +90,31 @@ class _AuthScreenState extends State<AuthScreen>
           'Welcome Back',
           style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
+                color: theme.colorScheme.onSurface,
               ),
         ),
         const SizedBox(height: 8),
         Text(
           'Sign in to continue managing your tasks',
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppColors.textSecondary,
+                color: theme.hintColor,
               ),
         ),
       ],
     );
   }
 
-  Widget _buildAuthForm(BuildContext context, AuthViewModel viewModel) {
+  Widget _buildAuthForm(
+      BuildContext context, AuthViewModel viewModel, ThemeData theme) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.cardBorder),
+        border: Border.all(color: theme.cardColor),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.05),
+            color: theme.shadowColor,
             blurRadius: 20,
             offset: const Offset(0, 4),
           ),
@@ -132,12 +135,12 @@ class _AuthScreenState extends State<AuthScreen>
                 ? 'Enter the code we sent you'
                 : 'We\'ll send you a verification code',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
+                  color: theme.hintColor,
                 ),
           ),
           const SizedBox(height: 24),
-          if (!viewModel.isOTPSent) _buildPhoneInput(context, viewModel),
-          if (viewModel.isOTPSent) _buildOTPInput(context, viewModel),
+          if (!viewModel.isOTPSent) _buildPhoneInput(context, viewModel, theme),
+          if (viewModel.isOTPSent) _buildOTPInput(context, viewModel, theme),
           const SizedBox(height: 24),
           SizedBox(
             height: 52,
@@ -188,9 +191,9 @@ class _AuthScreenState extends State<AuthScreen>
                       }
                     },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.textLight,
-                disabledBackgroundColor: AppColors.primary.withOpacity(0.6),
+                backgroundColor: theme.primaryColor,
+                foregroundColor: theme.colorScheme.onPrimary,
+                disabledBackgroundColor: theme.primaryColor.withOpacity(0.6),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -222,7 +225,7 @@ class _AuthScreenState extends State<AuthScreen>
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.textLight,
+                                theme.colorScheme.onPrimary,
                               ),
                             ),
                           ),
@@ -263,7 +266,8 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  Widget _buildPhoneInput(BuildContext context, AuthViewModel viewModel) {
+  Widget _buildPhoneInput(
+      BuildContext context, AuthViewModel viewModel, ThemeData theme) {
     return TextFormField(
       controller: _phoneController,
       keyboardType: TextInputType.phone,
@@ -285,7 +289,7 @@ class _AuthScreenState extends State<AuthScreen>
               Container(
                 width: 1,
                 height: 24,
-                color: AppColors.divider,
+                color: theme.dividerColor,
               ),
             ],
           ),
@@ -295,7 +299,8 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  Widget _buildOTPInput(BuildContext context, AuthViewModel viewModel) {
+  Widget _buildOTPInput(
+      BuildContext context, AuthViewModel viewModel, ThemeData theme) {
     return TextFormField(
       controller: _otpController,
       keyboardType: TextInputType.number,
@@ -309,7 +314,7 @@ class _AuthScreenState extends State<AuthScreen>
         hintText: '······',
         counterText: '',
         hintStyle: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: AppColors.textSecondary.withOpacity(0.5),
+              color: theme.hintColor.withOpacity(0.5),
               letterSpacing: 8,
             ),
       ),

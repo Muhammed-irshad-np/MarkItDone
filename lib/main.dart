@@ -14,14 +14,22 @@ import 'package:markitdone/ui/screens/register_and_permission_screen.dart';
 import 'package:markitdone/ui/screens/schedule_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:markitdone/config/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ui/screens/assigned_task_screen.dart';
 import 'providers/navigation_provider.dart';
+import 'ui/screens/onboarding_screen.dart';
+import 'ui/screens/pricing_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final bool onboardingCompleted =
+      prefs.getBool('onboarding_completed') ?? false;
+
   await _initializeFirebase();
-  runApp(const MyApp());
+  runApp(MyApp(initialRoute: '/onboarding'));
+  // onboardingCompleted ? '/auth' : '/onboarding'
 }
 
 Future<void> _initializeFirebase() async {
@@ -35,7 +43,9 @@ Future<void> _initializeFirebase() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String initialRoute;
+
+  const MyApp({Key? key, required this.initialRoute}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -52,9 +62,11 @@ class MyApp extends StatelessWidget {
         title: 'MarkItDone',
         theme: appTheme(),
         debugShowCheckedModeBanner: false,
-        initialRoute: '/',
+        initialRoute: initialRoute,
         routes: {
-          '/': (context) => AuthScreen(),
+          '/onboarding': (context) => const OnboardingScreen(),
+          '/pricing': (context) => const PricingScreen(),
+          '/auth': (context) => const AuthScreen(),
           '/register': (context) => const RegisterAndPermissionScreen(),
           '/createdTaskList': (context) => const TaskListingScreen(),
           '/completedTaskList': (context) => const CompletedTaskScreen(),

@@ -132,6 +132,7 @@ class AuthViewModel extends ChangeNotifier {
     _verificationId = '';
     _isOTPSent = false;
     documentId = '';
+    isLoading = false;
     notifyListeners();
   }
 }

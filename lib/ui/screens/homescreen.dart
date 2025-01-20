@@ -54,7 +54,16 @@ class _HomeScreenState extends State<HomeScreen>
             child: Text('Cancel'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () async {
+              Navigator.pop(context, true);
+              Provider.of<AuthViewModel>(context, listen: false).reset();
+              Provider.of<TasksViewmodel>(context, listen: false).reset();
+              await _auth.signOut();
+              if (context.mounted) {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/', (route) => false);
+              }
+            },
             style: TextButton.styleFrom(
               foregroundColor: AppColors.error,
             ),

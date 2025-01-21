@@ -167,16 +167,18 @@ class PersonalTaskScreen extends StatelessWidget {
       alignment: Alignment.centerRight,
       child: Container(
         constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.85,
+          maxWidth: MediaQuery.of(context).size.width * 0.75,
         ),
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: AppColors.darkprimary.withOpacity(0.1),
+          color: isCompleted
+              ? AppColors.darkprimary.withOpacity(0.2)
+              : AppColors.darkprimary.withOpacity(0.1),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
             bottomLeft: Radius.circular(16),
-            bottomRight: Radius.circular(16),
           ),
           border: Border.all(
             color: AppColors.darkprimary.withOpacity(0.15),

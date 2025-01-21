@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen>
               await _auth.signOut();
               if (context.mounted) {
                 Navigator.of(context)
-                    .pushNamedAndRemoveUntil('/', (route) => false);
+                    .pushNamedAndRemoveUntil('/auth', (route) => false);
               }
             },
             style: TextButton.styleFrom(
@@ -138,6 +138,7 @@ class _HomeScreenState extends State<HomeScreen>
                       _buildTaskOverview(context),
                       const SizedBox(height: 24),
                       _buildTaskCategories(context),
+                      _buildRecentlyAssignedTasksDummy(context),
                     ],
                   ),
                 ),
@@ -435,6 +436,164 @@ class _HomeScreenState extends State<HomeScreen>
       color: color,
       count: count,
       onTap: onTap,
+    );
+  }
+
+  Widget _buildRecentlyAssignedTasksDummy(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 24),
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.darksurface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.cardBorder),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Recent Task Activities',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: AppColors.darktextPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/taskHistory');
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'View All',
+                            style: TextStyle(
+                              color: AppColors.darkprimary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 14,
+                            color: AppColors.darkprimary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
+                child: Text(
+                  'Tasks shared with you and by you',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.darktextSecondary,
+                      ),
+                ),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 4,
+                itemBuilder: (context, index) {
+                  String personName = 'Person ${index + 1}';
+                  String taskTitle = 'Task Title ${index + 1}';
+                  String dateTime = '9:50 AM';
+
+                  return Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.darksurface,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(12),
+                        leading: CircleAvatar(
+                          radius: 24,
+                          backgroundColor:
+                              AppColors.darkprimary.withOpacity(0.15),
+                          child: Text(
+                            personName[0].toUpperCase(),
+                            style: const TextStyle(
+                              color: AppColors.darkprimary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        title: Text(
+                          personName,
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    color: AppColors.darktextPrimary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            taskTitle,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: AppColors.darktextSecondary,
+                                ),
+                          ),
+                        ),
+                        trailing: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.darkprimary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            dateTime,
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: AppColors.darkprimary,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                          ),
+                        ),
+                        onTap: () {
+                          // Placeholder for tap action
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

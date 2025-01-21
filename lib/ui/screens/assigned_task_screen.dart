@@ -76,7 +76,7 @@ class AssignedTaskScreen extends StatelessWidget {
                   (taskData['scheduledTime'] as Timestamp).toDate();
 
               return Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Date header if needed
                   if (index == 0 ||
@@ -104,168 +104,137 @@ class AssignedTaskScreen extends StatelessWidget {
                   ],
                   // Task bubble
                   Container(
-                    constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.85,
-                    ),
                     margin: const EdgeInsets.only(bottom: 12),
-                    child: IntrinsicHeight(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: isCompleted
-                                  ? AppColors.darkprimary.withOpacity(0.15)
-                                  : AppColors.darkprimary.withOpacity(0.1),
-                              borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(16),
-                                bottomLeft: Radius.circular(16),
-                                bottomRight: Radius.circular(16),
+                    child: Row(
+                      children: [
+                        // Checkbox
+                        Checkbox(
+                          value: isCompleted,
+                          onChanged: (bool? value) async {
+                            if (value != null) {
+                              try {
+                                await FirebaseFirestore.instance
+                                    .collection('alltasks')
+                                    .doc(tasks[index].id)
+                                    .update({
+                                  'state': value ? 'completed' : 'pending'
+                                });
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Error updating task status'),
+                                    backgroundColor: AppColors.error,
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                        ),
+                        // Task Details
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Task Title
+                              Text(
+                                taskData['title'] ?? 'Untitled Task',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.darktextPrimary,
+                                    ),
                               ),
-                              border: Border.all(
-                                color: AppColors.darkprimary.withOpacity(0.15),
-                                width: 1,
-                              ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Assignee info with status
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 14,
-                                      backgroundColor: Colors.white,
-                                      child: Text(
-                                        assigneeName[0].toUpperCase(),
-                                        style: TextStyle(
-                                          color: AppColors.darkprimary,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      assigneeName,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                            color: AppColors.darkprimary,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: isCompleted
-                                            ? AppColors.darkprimary
-                                                .withOpacity(0.1)
-                                            : AppColors.warning
-                                                .withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Text(
-                                        isCompleted ? 'Completed' : 'Pending',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(
-                                              color: isCompleted
-                                                  ? AppColors.darkprimary
-                                                  : AppColors.warning,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 11,
-                                            ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    IconButton(
-                                      icon:
-                                          const Icon(Icons.person_add_outlined),
-                                      iconSize: 20,
-                                      padding: EdgeInsets.zero,
-                                      constraints: const BoxConstraints(),
-                                      color: AppColors.darktextSecondary,
-                                      onPressed: () => _showReassignDialog(
-                                        context,
-                                        tasks[index].id,
-                                        assigneeName,
-                                      ),
-                                      tooltip: 'Reassign task',
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 12),
-                                // Task details
-                                Text(
-                                  taskData['title'] ?? 'Untitled Task',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.darktextPrimary,
-                                      ),
-                                ),
-                                if (taskData['description']?.isNotEmpty ==
-                                    true) ...[
-                                  const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.access_time,
+                                    size: 14,
+                                    color: AppColors.darktextSecondary,
+                                  ),
+                                  const SizedBox(width: 4),
                                   Text(
-                                    taskData['description'],
+                                    _formatTime(scheduledTime),
                                     style: Theme.of(context)
                                         .textTheme
-                                        .bodyMedium
+                                        .bodySmall
                                         ?.copyWith(
                                           color: AppColors.darktextSecondary,
+                                          fontSize: 12,
                                         ),
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ],
-                                const SizedBox(height: 8),
-                                // Time with double check for completed tasks
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.access_time,
-                                      size: 14,
-                                      color: AppColors.darktextSecondary,
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
                                     ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      _formatTime(scheduledTime),
+                                    decoration: BoxDecoration(
+                                      color: isCompleted
+                                          ? AppColors.darkprimary
+                                              .withOpacity(0.1)
+                                          : AppColors.warning.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      isCompleted ? 'Completed' : 'Pending',
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall
                                           ?.copyWith(
-                                            color: AppColors.darktextSecondary,
-                                            fontSize: 12,
+                                            color: isCompleted
+                                                ? AppColors.darkprimary
+                                                : AppColors.warning,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 11,
                                           ),
                                     ),
-                                    if (isCompleted) ...[
-                                      const SizedBox(width: 4),
-                                      Icon(
-                                        Icons.done_all,
-                                        size: 14,
-                                        color: AppColors.darkprimary,
-                                      ),
-                                    ],
-                                  ],
-                                ),
-                              ],
-                            ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  // Reassign Icon
+                                  IconButton(
+                                    icon: Icon(Icons.person_add_alt_1,
+                                        color: AppColors.darktextSecondary),
+                                    onPressed: () {
+                                      _showReassignDialog(context,
+                                          tasks[index].id, assigneeName);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        // Profile Avatar and Assignee Name
+                        Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 20,
+                              backgroundColor: Colors.white,
+                              child: Text(
+                                assigneeName[0].toUpperCase(),
+                                style: TextStyle(
+                                  color: AppColors.darkprimary,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              assigneeName,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.darktextSecondary,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ],

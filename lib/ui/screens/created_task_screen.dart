@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:markitdone/config/theme.dart';
 import 'package:markitdone/ui/widgets/task_card.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TaskListingScreen extends StatelessWidget {
   const TaskListingScreen({Key? key}) : super(key: key);
@@ -62,9 +63,12 @@ class TaskListingScreen extends StatelessWidget {
             onPressed: () {
               // Handle done action
             },
-            child: const Text(
+            child: Text(
               'Done',
-              style: TextStyle(color: AppColors.darkprimary),
+              style: TextStyle(
+                color: AppColors.darkprimary,
+                fontSize: 14.sp,
+              ),
             ),
           ),
         ],
@@ -110,7 +114,7 @@ class TaskListingScreen extends StatelessWidget {
           final groupedTasks = _groupTasksByDate(tasks);
 
           return ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             itemCount: groupedTasks.length,
             itemBuilder: (context, index) {
               final date = groupedTasks.keys.elementAt(index);
@@ -122,13 +126,15 @@ class TaskListingScreen extends StatelessWidget {
                   // Date header with improved styling
                   Center(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 6),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 6.h,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.darkprimary.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(20.r),
                         ),
                         child: Text(
                           date,
@@ -136,7 +142,7 @@ class TaskListingScreen extends StatelessWidget {
                               Theme.of(context).textTheme.bodySmall?.copyWith(
                                     color: AppColors.darkprimary,
                                     fontWeight: FontWeight.w600,
-                                    fontSize: 13,
+                                    fontSize: 13.sp,
                                   ),
                         ),
                       ),
@@ -146,20 +152,20 @@ class TaskListingScreen extends StatelessWidget {
                   ...tasksForDate.map((task) {
                     final taskData = task.data() as Map<String, dynamic>;
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
+                      padding: EdgeInsets.only(bottom: 12.h),
                       child: InkWell(
                         onTap: () {
                           // Handle task tap if needed
                         },
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.r),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          padding: EdgeInsets.symmetric(horizontal: 4.w),
                           child: Row(
                             children: [
                               // Custom Checkbox
                               SizedBox(
-                                width: 24,
-                                height: 24,
+                                width: 24.w,
+                                height: 24.h,
                                 child: Transform.scale(
                                   scale: 0.9,
                                   child: Checkbox(
@@ -175,7 +181,7 @@ class TaskListingScreen extends StatelessWidget {
                                     },
                                     activeColor: AppColors.darkprimary,
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(6),
+                                      borderRadius: BorderRadius.circular(6.r),
                                     ),
                                     side: BorderSide(
                                       color: AppColors.darkprimary
@@ -185,7 +191,7 @@ class TaskListingScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              SizedBox(width: 12.w),
                               // Task Content
                               Expanded(
                                 child: Column(
@@ -205,13 +211,13 @@ class TaskListingScreen extends StatelessWidget {
                                                     'completed'
                                                 ? AppColors.darktextSecondary
                                                 : AppColors.darktextPrimary,
-                                            fontSize: 16,
+                                            fontSize: 16.sp,
                                             fontWeight: FontWeight.w500,
                                           ),
                                     ),
                                     if (taskData['description']?.isNotEmpty ==
                                         true) ...[
-                                      const SizedBox(height: 4),
+                                      SizedBox(height: 4.h),
                                       Text(
                                         taskData['description'],
                                         style: Theme.of(context)
@@ -220,7 +226,7 @@ class TaskListingScreen extends StatelessWidget {
                                             ?.copyWith(
                                               color:
                                                   AppColors.darktextSecondary,
-                                              fontSize: 14,
+                                              fontSize: 14.sp,
                                             ),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
@@ -237,7 +243,7 @@ class TaskListingScreen extends StatelessWidget {
                                     .bodySmall
                                     ?.copyWith(
                                       color: AppColors.darktextSecondary,
-                                      fontSize: 12,
+                                      fontSize: 12.sp,
                                     ),
                               ),
                             ],

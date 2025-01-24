@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:markitdone/config/theme.dart';
 import 'package:markitdone/ui/widgets/task_card.dart';
@@ -43,10 +43,10 @@ class CompletedTaskScreen extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.task_outlined,
-                    size: 64,
+                    size: 64.sp,
                     color: AppColors.darktextSecondary.withOpacity(0.5),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Text(
                     'No completed tasks yet',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -60,7 +60,7 @@ class CompletedTaskScreen extends StatelessWidget {
 
           final tasks = snapshot.data!.docs;
           return ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             itemCount: tasks.length,
             itemBuilder: (context, index) {
               final task = tasks[index].data() as Map<String, dynamic>;
@@ -75,12 +75,12 @@ class CompletedTaskScreen extends StatelessWidget {
                   children: [
                     Center(
                       child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 16),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 4),
+                        margin: EdgeInsets.symmetric(vertical: 16.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 4.h),
                         decoration: BoxDecoration(
                           color: AppColors.darkprimary.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: Text(
                           _formatDateHeader(
@@ -118,18 +118,18 @@ class CompletedTaskScreen extends StatelessWidget {
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.85,
         ),
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(12),
+        margin: EdgeInsets.only(bottom: 12.h),
+        padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
           color: AppColors.darkprimary.withOpacity(0.05),
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(16),
-            bottomLeft: Radius.circular(16),
-            bottomRight: Radius.circular(16),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16.r),
+            bottomLeft: Radius.circular(16.r),
+            bottomRight: Radius.circular(16.r),
           ),
           border: Border.all(
             color: AppColors.darkprimary.withOpacity(0.1),
-            width: 1,
+            width: 1.w,
           ),
         ),
         child: Column(
@@ -139,18 +139,18 @@ class CompletedTaskScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(4),
+                  padding: EdgeInsets.all(4.w),
                   decoration: BoxDecoration(
                     color: AppColors.darkprimary.withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.check,
-                    size: 16,
+                    size: 16.sp,
                     color: AppColors.darkprimary,
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 Expanded(
                   child: Text(
                     task['title'] ?? 'Untitled Task',
@@ -163,9 +163,9 @@ class CompletedTaskScreen extends StatelessWidget {
               ],
             ),
             if (task['description']?.isNotEmpty == true) ...[
-              const SizedBox(height: 4),
+              SizedBox(height: 4.h),
               Padding(
-                padding: const EdgeInsets.only(left: 28),
+                padding: EdgeInsets.only(left: 28.w),
                 child: Text(
                   task['description'],
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -176,32 +176,32 @@ class CompletedTaskScreen extends StatelessWidget {
                 ),
               ),
             ],
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const SizedBox(width: 28),
+                SizedBox(width: 28.w),
                 Icon(
                   isScheduled
                       ? Icons.calendar_today_outlined
                       : Icons.access_time,
-                  size: 14,
+                  size: 14.sp,
                   color: AppColors.darktextSecondary,
                 ),
-                const SizedBox(width: 4),
+                SizedBox(width: 4.w),
                 Text(
                   isScheduled
                       ? 'Completed at ${_formatTime(timeToShow)}'
                       : 'Completed at ${_formatTime(timeToShow)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppColors.darktextSecondary,
-                        fontSize: 12,
+                        fontSize: 12.sp,
                       ),
                 ),
-                const SizedBox(width: 4),
+                SizedBox(width: 4.w),
                 Icon(
                   Icons.done_all,
-                  size: 14,
+                  size: 14.sp,
                   color: AppColors.darkprimary,
                 ),
               ],

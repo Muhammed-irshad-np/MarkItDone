@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:markitdone/config/theme.dart';
 import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -46,19 +47,18 @@ class _AuthScreenState extends State<AuthScreen>
     final theme = Theme.of(context);
 
     return Scaffold(
-      // backgroundColor: AppColors.darkbackground,
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
+          padding: EdgeInsets.all(24.0.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 60),
+              SizedBox(height: 60.h),
               _buildLogo(theme),
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
               _buildHeader(context, theme),
-              const SizedBox(height: 48),
+              SizedBox(height: 48.h),
               _buildAuthForm(context, viewModel, theme),
             ],
           ),
@@ -69,14 +69,14 @@ class _AuthScreenState extends State<AuthScreen>
 
   Widget _buildLogo(ThemeData theme) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: theme.primaryColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
       ),
       child: Icon(
         Icons.check_circle_rounded,
-        size: 56,
+        size: 56.w,
         color: theme.primaryColor,
       ),
     );
@@ -91,13 +91,15 @@ class _AuthScreenState extends State<AuthScreen>
           style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: theme.colorScheme.onSurface,
+                fontSize: 28.sp,
               ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Text(
           'Sign in to continue managing your tasks',
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: theme.hintColor,
+                fontSize: 16.sp,
               ),
         ),
       ],
@@ -107,10 +109,10 @@ class _AuthScreenState extends State<AuthScreen>
   Widget _buildAuthForm(
       BuildContext context, AuthViewModel viewModel, ThemeData theme) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24.w),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(24.r),
         border: Border.all(color: theme.cardColor),
         boxShadow: [
           BoxShadow(
@@ -127,23 +129,25 @@ class _AuthScreenState extends State<AuthScreen>
             viewModel.isOTPSent ? 'Verify OTP' : 'Phone Number',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
+                  fontSize: 20.sp,
                 ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             viewModel.isOTPSent
                 ? 'Enter the code we sent you'
                 : 'We\'ll send you a verification code',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: theme.hintColor,
+                  fontSize: 14.sp,
                 ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           if (!viewModel.isOTPSent) _buildPhoneInput(context, viewModel, theme),
           if (viewModel.isOTPSent) _buildOTPInput(context, viewModel, theme),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           SizedBox(
-            height: 52,
+            height: 52.h,
             child: ElevatedButton(
               onPressed: viewModel.isLoading
                   ? null
@@ -164,15 +168,11 @@ class _AuthScreenState extends State<AuthScreen>
                           viewModel.setPhoneNumber(_phoneController.text);
                           await viewModel.verifyPhoneNumber();
 
-                          // Wait for animation to complete before updating loading state
                           await Future.delayed(
                               const Duration(milliseconds: 100));
                           viewModel.setIsOTPSent(true);
                           viewModel.isLoading = false;
                           viewModel.notifyListeners();
-                          // if (mounted) {
-                          //   setState(() => _isLoading = false);
-                          // }
                         } catch (e) {
                           if (mounted) {
                             viewModel.isLoading = false;
@@ -183,10 +183,6 @@ class _AuthScreenState extends State<AuthScreen>
                               ),
                             );
                           }
-                        } finally {
-                          // if (mounted) {
-                          //   setState(() => _isLoading = false);
-                          // }
                         }
                       }
                     },
@@ -195,11 +191,10 @@ class _AuthScreenState extends State<AuthScreen>
                 foregroundColor: theme.colorScheme.onPrimary,
                 disabledBackgroundColor: theme.primaryColor.withOpacity(0.6),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
                 elevation: 0,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
               ),
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
@@ -215,46 +210,44 @@ class _AuthScreenState extends State<AuthScreen>
                 },
                 child: viewModel.isLoading
                     ? Row(
-                        // key: const ValueKey('loading'),
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SizedBox(
-                            width: 20,
-                            height: 20,
+                            width: 20.w,
+                            height: 20.h,
                             child: CircularProgressIndicator(
-                              strokeWidth: 2,
+                              strokeWidth: 2.w,
                               valueColor: AlwaysStoppedAnimation<Color>(
                                 theme.colorScheme.onPrimary,
                               ),
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: 12.w),
                           Text(
                             viewModel.isOTPSent
                                 ? 'Verifying...'
                                 : 'Sending OTP...',
-                            style: const TextStyle(
-                              fontSize: 16,
+                            style: TextStyle(
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
                       )
                     : Row(
-                        // key: const ValueKey('normal'),
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             viewModel.isOTPSent ? 'Verify' : 'Continue',
-                            style: const TextStyle(
-                              fontSize: 16,
+                            style: TextStyle(
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           if (!viewModel.isOTPSent) ...[
-                            const SizedBox(width: 8),
-                            const Icon(Icons.arrow_forward, size: 18),
+                            SizedBox(width: 8.w),
+                            Icon(Icons.arrow_forward, size: 18.w),
                           ],
                         ],
                       ),
@@ -271,11 +264,13 @@ class _AuthScreenState extends State<AuthScreen>
     return TextFormField(
       controller: _phoneController,
       keyboardType: TextInputType.phone,
-      style: Theme.of(context).textTheme.bodyLarge,
+      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            fontSize: 16.sp,
+          ),
       decoration: InputDecoration(
         hintText: 'Enter your phone number',
         prefixIcon: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -283,18 +278,19 @@ class _AuthScreenState extends State<AuthScreen>
                 '+91',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w500,
+                      fontSize: 16.sp,
                     ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Container(
-                width: 1,
-                height: 24,
+                width: 1.w,
+                height: 24.h,
                 color: theme.dividerColor,
               ),
             ],
           ),
         ),
-        prefixIconConstraints: const BoxConstraints(minWidth: 0),
+        prefixIconConstraints: BoxConstraints(minWidth: 0.w),
       ),
     );
   }
@@ -306,8 +302,9 @@ class _AuthScreenState extends State<AuthScreen>
       keyboardType: TextInputType.number,
       maxLength: 6,
       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            letterSpacing: 8,
+            letterSpacing: 8.w,
             fontWeight: FontWeight.bold,
+            fontSize: 24.sp,
           ),
       textAlign: TextAlign.center,
       decoration: InputDecoration(
@@ -315,7 +312,8 @@ class _AuthScreenState extends State<AuthScreen>
         counterText: '',
         hintStyle: Theme.of(context).textTheme.headlineMedium?.copyWith(
               color: theme.hintColor.withOpacity(0.5),
-              letterSpacing: 8,
+              letterSpacing: 8.w,
+              fontSize: 24.sp,
             ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:markitdone/config/theme.dart';
 
 class PricingScreen extends StatelessWidget {
@@ -16,6 +17,7 @@ class PricingScreen extends StatelessWidget {
             icon: Icon(
               Icons.close,
               color: AppColors.darktextPrimary,
+              size: 24.w,
             ),
             onPressed: () {
               Navigator.pushReplacementNamed(context, '/auth');
@@ -25,7 +27,7 @@ class PricingScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(left: 24, right: 24, top: 0),
+          padding: EdgeInsets.only(left: 24.w, right: 24.w, top: 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -34,18 +36,20 @@ class PricingScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: AppColors.darktextPrimary,
                       fontWeight: FontWeight.bold,
+                      fontSize: 24.sp,
                     ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Text(
                 'Select the perfect plan for your needs',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: AppColors.darktextSecondary,
+                      fontSize: 16.sp,
                     ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: 40.h),
               Expanded(
                 child: ListView(
                   children: [
@@ -60,7 +64,7 @@ class PricingScreen extends StatelessWidget {
                       ],
                       isPro: false,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     _buildPlanCard(
                       context,
                       title: 'Pro',
@@ -81,7 +85,10 @@ class PricingScreen extends StatelessWidget {
                       },
                       child: Text(
                         'Skip',
-                        style: TextStyle(color: AppColors.darktextSecondary),
+                        style: TextStyle(
+                          color: AppColors.darktextSecondary,
+                          fontSize: 14.sp,
+                        ),
                       ),
                     ),
                   ],
@@ -102,15 +109,15 @@ class PricingScreen extends StatelessWidget {
     required bool isPro,
   }) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24.w),
       decoration: BoxDecoration(
         color: isPro
             ? AppColors.darkprimary.withOpacity(0.1)
             : AppColors.darksurface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
           color: isPro ? AppColors.darkprimary : AppColors.cardBorder,
-          width: 2,
+          width: 2.w,
         ),
       ),
       child: Column(
@@ -125,30 +132,32 @@ class PricingScreen extends StatelessWidget {
                           ? AppColors.darkprimary
                           : AppColors.darktextPrimary,
                       fontWeight: FontWeight.bold,
+                      fontSize: 20.sp,
                     ),
               ),
               if (isPro) ...[
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 8.w,
+                    vertical: 4.h,
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.darkprimary,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Text(
                     'RECOMMENDED',
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           color: AppColors.textLight,
+                          fontSize: 10.sp,
                         ),
                   ),
                 ),
               ],
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           RichText(
             text: TextSpan(
               children: [
@@ -159,6 +168,7 @@ class PricingScreen extends StatelessWidget {
                             ? AppColors.darkprimary
                             : AppColors.darktextPrimary,
                         fontWeight: FontWeight.bold,
+                        fontSize: 32.sp,
                       ),
                 ),
                 if (price != '0')
@@ -166,14 +176,15 @@ class PricingScreen extends StatelessWidget {
                     text: '/month',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: AppColors.darktextSecondary,
+                          fontSize: 16.sp,
                         ),
                   ),
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           ...features.map((feature) => Padding(
-                padding: const EdgeInsets.only(bottom: 12),
+                padding: EdgeInsets.only(bottom: 12.h),
                 child: Row(
                   children: [
                     Icon(
@@ -181,20 +192,21 @@ class PricingScreen extends StatelessWidget {
                       color: isPro
                           ? AppColors.darkprimary
                           : AppColors.darktextSecondary,
-                      size: 20,
+                      size: 20.w,
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.w),
                     Text(
                       feature,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: AppColors.darktextPrimary,
+                            fontSize: 14.sp,
                           ),
                     ),
                   ],
                 ),
               )),
           if (isPro) ...[
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -203,11 +215,14 @@ class PricingScreen extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.darkprimary,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: EdgeInsets.symmetric(vertical: 16.h),
                 ),
                 child: Text(
                   'Upgrade to Pro',
-                  style: TextStyle(color: AppColors.textLight),
+                  style: TextStyle(
+                    color: AppColors.textLight,
+                    fontSize: 16.sp,
+                  ),
                 ),
               ),
             ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:markitdone/config/theme.dart';
 import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
@@ -62,10 +62,10 @@ class PersonalTaskScreen extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.task_outlined,
-                    size: 64,
+                    size: 64.sp,
                     color: AppColors.darktextSecondary.withOpacity(0.5),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Text(
                     'No personal tasks yet',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -78,7 +78,7 @@ class PersonalTaskScreen extends StatelessWidget {
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             itemCount: filteredTasks.length,
             itemBuilder: (context, index) {
               final task = filteredTasks[index].data() as Map<String, dynamic>;
@@ -91,12 +91,12 @@ class PersonalTaskScreen extends StatelessWidget {
                   children: [
                     Center(
                       child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 16),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 4),
+                        margin: EdgeInsets.symmetric(vertical: 16.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 4.h),
                         decoration: BoxDecoration(
                           color: AppColors.darkprimary.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: Text(
                           _formatDateHeader(scheduledTime),
@@ -169,20 +169,20 @@ class PersonalTaskScreen extends StatelessWidget {
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.75,
         ),
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        padding: const EdgeInsets.all(10),
+        margin: EdgeInsets.symmetric(vertical: 4.h),
+        padding: EdgeInsets.all(10.w),
         decoration: BoxDecoration(
           color: isCompleted
               ? AppColors.darkprimary.withOpacity(0.2)
               : AppColors.darkprimary.withOpacity(0.1),
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
-            bottomLeft: Radius.circular(16),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16.r),
+            topRight: Radius.circular(16.r),
+            bottomLeft: Radius.circular(16.r),
           ),
           border: Border.all(
             color: AppColors.darkprimary.withOpacity(0.15),
-            width: 1,
+            width: 1.w,
           ),
         ),
         child: Column(
@@ -195,8 +195,8 @@ class PersonalTaskScreen extends StatelessWidget {
                   child: Row(
                     children: [
                       SizedBox(
-                        width: 24,
-                        height: 24,
+                        width: 24.w,
+                        height: 24.h,
                         child: Transform.scale(
                           scale: 0.9,
                           child: Checkbox(
@@ -211,16 +211,16 @@ class PersonalTaskScreen extends StatelessWidget {
                             },
                             activeColor: AppColors.darkprimary,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: BorderRadius.circular(6.r),
                             ),
                             side: BorderSide(
                               color: AppColors.darkprimary.withOpacity(0.5),
-                              width: 1.5,
+                              width: 1.5.w,
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8.w),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,14 +240,14 @@ class PersonalTaskScreen extends StatelessWidget {
                             ),
                             if (isScheduled)
                               Container(
-                                margin: const EdgeInsets.only(top: 2),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 2,
+                                margin: EdgeInsets.only(top: 2.h),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 6.w,
+                                  vertical: 2.h,
                                 ),
                                 decoration: BoxDecoration(
                                   color: AppColors.darkprimary.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(4),
+                                  borderRadius: BorderRadius.circular(4.r),
                                 ),
                                 child: Text(
                                   'Scheduled',
@@ -256,7 +256,7 @@ class PersonalTaskScreen extends StatelessWidget {
                                       .bodySmall
                                       ?.copyWith(
                                         color: AppColors.darkprimary,
-                                        fontSize: 10,
+                                        fontSize: 10.sp,
                                         fontWeight: FontWeight.w500,
                                       ),
                                 ),
@@ -271,21 +271,21 @@ class PersonalTaskScreen extends StatelessWidget {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.person_add_outlined),
-                      iconSize: 20,
+                      iconSize: 20.sp,
                       color: AppColors.darktextSecondary,
                       onPressed: () => _showAssignDialog(context, taskId),
                       tooltip: 'Assign task',
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 4.h,
                       ),
                       decoration: BoxDecoration(
                         color: isCompleted
                             ? AppColors.darkprimary.withOpacity(0.1)
                             : AppColors.warning.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: Text(
                         isCompleted ? 'Completed' : 'Pending',
@@ -294,7 +294,7 @@ class PersonalTaskScreen extends StatelessWidget {
                                   ? AppColors.darkprimary
                                   : AppColors.warning,
                               fontWeight: FontWeight.w500,
-                              fontSize: 11,
+                              fontSize: 11.sp,
                             ),
                       ),
                     ),
@@ -303,7 +303,7 @@ class PersonalTaskScreen extends StatelessWidget {
               ],
             ),
             if (task['description']?.isNotEmpty == true) ...[
-              const SizedBox(height: 4),
+              SizedBox(height: 4.h),
               Text(
                 task['description'],
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -313,7 +313,7 @@ class PersonalTaskScreen extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ],
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -321,17 +321,17 @@ class PersonalTaskScreen extends StatelessWidget {
                   isScheduled
                       ? Icons.calendar_today_outlined
                       : Icons.access_time,
-                  size: 14,
+                  size: 14.sp,
                   color: AppColors.darktextSecondary,
                 ),
-                const SizedBox(width: 4),
+                SizedBox(width: 4.w),
                 Text(
                   isScheduled
                       ? 'Scheduled: ${_formatTime(timeToShow)}'
                       : 'Created: ${_formatTime(timeToShow)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppColors.darktextSecondary,
-                        fontSize: 12,
+                        fontSize: 12.sp,
                       ),
                 ),
               ],

@@ -6,6 +6,7 @@ import 'package:markitdone/ui/widgets/contact_picker_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AssignedTaskScreen extends StatelessWidget {
   const AssignedTaskScreen({Key? key}) : super(key: key);
@@ -48,10 +49,10 @@ class AssignedTaskScreen extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.assignment_outlined,
-                    size: 64,
+                    size: 64.sp,
                     color: AppColors.darktextSecondary.withOpacity(0.5),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Text(
                     'No assigned tasks',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -66,7 +67,7 @@ class AssignedTaskScreen extends StatelessWidget {
 
           final tasks = snapshot.data!.docs;
           return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
             itemCount: tasks.length,
             itemBuilder: (context, index) {
               final taskData = tasks[index].data() as Map<String, dynamic>;
@@ -78,18 +79,17 @@ class AssignedTaskScreen extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Date header if needed
                   if (index == 0 ||
                       _shouldShowDateHeader(
                           tasks[index - 1], tasks[index])) ...[
                     Center(
                       child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 16),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 4),
+                        margin: EdgeInsets.symmetric(vertical: 16.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 4.h),
                         decoration: BoxDecoration(
                           color: AppColors.darkprimary.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: Text(
                           _formatDateHeader(scheduledTime),
@@ -102,40 +102,52 @@ class AssignedTaskScreen extends StatelessWidget {
                       ),
                     ),
                   ],
-                  // Task bubble
                   Container(
-                    margin: const EdgeInsets.only(bottom: 12),
+                    margin: EdgeInsets.only(bottom: 12.h),
                     child: Row(
                       children: [
-                        // Checkbox
-                        Checkbox(
-                          value: isCompleted,
-                          onChanged: (bool? value) async {
-                            if (value != null) {
-                              try {
-                                await FirebaseFirestore.instance
-                                    .collection('alltasks')
-                                    .doc(tasks[index].id)
-                                    .update({
-                                  'state': value ? 'completed' : 'pending'
-                                });
-                              } catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Error updating task status'),
-                                    backgroundColor: AppColors.error,
-                                  ),
-                                );
-                              }
-                            }
-                          },
+                        SizedBox(
+                          width: 24.w,
+                          height: 24.h,
+                          child: Transform.scale(
+                            scale: 0.9,
+                            child: Checkbox(
+                              value: isCompleted,
+                              onChanged: (bool? value) async {
+                                if (value != null) {
+                                  try {
+                                    await FirebaseFirestore.instance
+                                        .collection('alltasks')
+                                        .doc(tasks[index].id)
+                                        .update({
+                                      'state': value ? 'completed' : 'pending'
+                                    });
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Error updating task status'),
+                                        backgroundColor: AppColors.error,
+                                      ),
+                                    );
+                                  }
+                                }
+                              },
+                              activeColor: AppColors.darkprimary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              side: BorderSide(
+                                color: AppColors.darkprimary.withOpacity(0.5),
+                                width: 1.5,
+                              ),
+                            ),
+                          ),
                         ),
-                        // Task Details
+                        SizedBox(width: 8.w),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Task Title
                               Text(
                                 taskData['title'] ?? 'Untitled Task',
                                 style: Theme.of(context)
@@ -150,10 +162,10 @@ class AssignedTaskScreen extends StatelessWidget {
                                 children: [
                                   Icon(
                                     Icons.access_time,
-                                    size: 14,
+                                    size: 14.sp,
                                     color: AppColors.darktextSecondary,
                                   ),
-                                  const SizedBox(width: 4),
+                                  SizedBox(width: 4.w),
                                   Text(
                                     _formatTime(scheduledTime),
                                     style: Theme.of(context)
@@ -161,21 +173,21 @@ class AssignedTaskScreen extends StatelessWidget {
                                         .bodySmall
                                         ?.copyWith(
                                           color: AppColors.darktextSecondary,
-                                          fontSize: 12,
+                                          fontSize: 12.sp,
                                         ),
                                   ),
-                                  const SizedBox(width: 8),
+                                  SizedBox(width: 8.w),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 8.w,
+                                      vertical: 4.h,
                                     ),
                                     decoration: BoxDecoration(
                                       color: isCompleted
                                           ? AppColors.darkprimary
                                               .withOpacity(0.1)
                                           : AppColors.warning.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(12),
+                                      borderRadius: BorderRadius.circular(12.r),
                                     ),
                                     child: Text(
                                       isCompleted ? 'Completed' : 'Pending',
@@ -187,14 +199,14 @@ class AssignedTaskScreen extends StatelessWidget {
                                                 ? AppColors.darkprimary
                                                 : AppColors.warning,
                                             fontWeight: FontWeight.w500,
-                                            fontSize: 11,
+                                            fontSize: 11.sp,
                                           ),
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
-                                  // Reassign Icon
+                                  SizedBox(width: 8.w),
                                   IconButton(
                                     icon: Icon(Icons.person_add_alt_1,
+                                        size: 20.sp,
                                         color: AppColors.darktextSecondary),
                                     onPressed: () {
                                       _showReassignDialog(context,
@@ -206,22 +218,21 @@ class AssignedTaskScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                        // Profile Avatar and Assignee Name
                         Column(
                           children: [
                             CircleAvatar(
-                              radius: 20,
+                              radius: 20.r,
                               backgroundColor: Colors.white,
                               child: Text(
                                 assigneeName[0].toUpperCase(),
                                 style: TextStyle(
                                   color: AppColors.darkprimary,
-                                  fontSize: 16,
+                                  fontSize: 16.sp,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            SizedBox(height: 4.h),
                             Text(
                               assigneeName,
                               style: Theme.of(context)
@@ -290,7 +301,6 @@ class AssignedTaskScreen extends StatelessWidget {
       bool hasPermission = await _handleContactPermission(context);
       if (!hasPermission) return;
 
-      // Get all contacts
       final contacts = await FlutterContacts.getContacts(
         withProperties: true,
         withPhoto: true,
@@ -298,21 +308,18 @@ class AssignedTaskScreen extends StatelessWidget {
 
       if (!context.mounted) return;
 
-      // Show custom contact picker dialog
       final selectedContact = await showModalBottomSheet<Contact>(
         context: context,
         backgroundColor: AppColors.darksurface,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
         builder: (context) => ContactPickerSheet(contacts: contacts),
       );
 
       if (selectedContact != null && context.mounted) {
-        // Get phone number
         final phone = selectedContact.phones.first.number.replaceAll(' ', '');
 
-        // Update task in Firestore
         await FirebaseFirestore.instance
             .collection('alltasks')
             .doc(taskId)

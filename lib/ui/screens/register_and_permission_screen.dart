@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RegisterAndPermissionScreen extends StatefulWidget {
   const RegisterAndPermissionScreen({super.key});
@@ -47,28 +48,45 @@ class _RegisterAndPermissionScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Register'),
+        title: Text(
+          'Register',
+          style: TextStyle(fontSize: 20.sp),
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.w),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _nameController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Enter your name',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 16.w,
+                  vertical: 12.h,
+                ),
               ),
+              style: TextStyle(fontSize: 16.sp),
               textInputAction: TextInputAction.done,
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
             ElevatedButton(
               onPressed: _handleSubmit,
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 50),
+                minimumSize: Size(double.infinity, 50.h),
+                padding: EdgeInsets.symmetric(vertical: 12.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
               ),
-              child: const Text('Submit'),
+              child: Text(
+                'Submit',
+                style: TextStyle(fontSize: 16.sp),
+              ),
             ),
           ],
         ),

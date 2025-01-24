@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:markitdone/config/theme.dart';
 import 'package:markitdone/data/models/onboarding_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -71,28 +72,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Widget _buildPage(OnboardingItem item) {
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: EdgeInsets.all(24.0.w),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
             item.imagePath,
-            height: MediaQuery.of(context).size.height * 0.4,
+            height: 0.4.sh,
           ),
-          const SizedBox(height: 40),
+          SizedBox(height: 40.h),
           Text(
             item.title,
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   color: AppColors.darktextPrimary,
                   fontWeight: FontWeight.bold,
+                  fontSize: 24.sp,
                 ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             item.description,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: AppColors.darktextSecondary,
+                  fontSize: 16.sp,
                 ),
             textAlign: TextAlign.center,
           ),
@@ -103,7 +106,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Widget _buildBottomSection() {
     return Container(
-      padding: const EdgeInsets.all(24.0),
+      padding: EdgeInsets.all(24.0.w),
       child: Column(
         children: [
           Row(
@@ -113,7 +116,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               (index) => _buildDotIndicator(index),
             ),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32.h),
           Row(
             children: [
               if (_currentPage > 0)
@@ -126,7 +129,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   },
                   child: Text(
                     'Previous',
-                    style: TextStyle(color: AppColors.darktextSecondary),
+                    style: TextStyle(
+                      color: AppColors.darktextSecondary,
+                      fontSize: 14.sp,
+                    ),
                   ),
                 ),
               const Spacer(),
@@ -143,14 +149,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.darkprimary,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 32.w,
+                    vertical: 16.h,
                   ),
                 ),
                 child: Text(
                   _currentPage == _items.length - 1 ? 'Get Started' : 'Next',
-                  style: TextStyle(color: AppColors.textLight),
+                  style: TextStyle(
+                    color: AppColors.textLight,
+                    fontSize: 14.sp,
+                  ),
                 ),
               ),
             ],
@@ -163,14 +172,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _buildDotIndicator(int index) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      height: 8,
-      width: _currentPage == index ? 24 : 8,
+      margin: EdgeInsets.symmetric(horizontal: 4.w),
+      height: 8.h,
+      width: _currentPage == index ? 24.w : 8.w,
       decoration: BoxDecoration(
         color: _currentPage == index
             ? AppColors.darkprimary
-              : AppColors.darktextSecondary.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(4),
+            : AppColors.darktextSecondary.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(4.r),
       ),
     );
   }

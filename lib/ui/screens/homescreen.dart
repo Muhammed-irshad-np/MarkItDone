@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:markitdone/config/theme.dart';
 import 'package:markitdone/providers/view_models/tasks_viewmodel.dart';
 import 'package:markitdone/ui/screens/task_creation.dart';
@@ -130,13 +131,13 @@ class _HomeScreenState extends State<HomeScreen>
               _buildAppBar(context),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24.h),
                       _buildTaskOverview(context),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24.h),
                       _buildTaskCategories(context),
                       _buildRecentlyAssignedTasksDummy(context),
                     ],
@@ -165,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen>
                   style: TextStyle(color: AppColors.darkprimary),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -194,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen>
           color: AppColors.darksurface,
           elevation: 2,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12.r),
           ),
           onSelected: (value) async {
             if (value == 'logout') {
@@ -209,9 +210,9 @@ class _HomeScreenState extends State<HomeScreen>
                   Icon(
                     Icons.logout,
                     color: AppColors.error,
-                    size: 20,
+                    size: 20.sp,
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12.w),
                   Text(
                     'Logout',
                     style: TextStyle(
@@ -244,7 +245,7 @@ class _HomeScreenState extends State<HomeScreen>
         int pendingTasks = totalTasks - completedTasks;
 
         return Container(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20.w),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -254,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen>
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(20.r),
           ),
           child: Column(
             children: [
@@ -276,7 +277,7 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -318,8 +319,8 @@ class _HomeScreenState extends State<HomeScreen>
   }) {
     return Column(
       children: [
-        Icon(icon, color: color ?? Colors.white, size: 24),
-        const SizedBox(height: 8),
+        Icon(icon, color: color ?? Colors.white, size: 24.sp),
+        SizedBox(height: 8.h),
         Text(
           value,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -374,8 +375,8 @@ class _HomeScreenState extends State<HomeScreen>
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           crossAxisCount: 2,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
+          mainAxisSpacing: 16.h,
+          crossAxisSpacing: 16.w,
           childAspectRatio: 1.1,
           children: [
             _buildCategoryCard(
@@ -443,11 +444,11 @@ class _HomeScreenState extends State<HomeScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 24),
+        SizedBox(height: 24.h),
         Container(
           decoration: BoxDecoration(
             color: AppColors.darksurface,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             border: Border.all(color: AppColors.cardBorder),
             boxShadow: [
               BoxShadow(
@@ -461,7 +462,7 @@ class _HomeScreenState extends State<HomeScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -491,10 +492,10 @@ class _HomeScreenState extends State<HomeScreen>
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4.w),
                           Icon(
                             Icons.arrow_forward_ios,
-                            size: 14,
+                            size: 14.sp,
                             color: AppColors.darkprimary,
                           ),
                         ],
@@ -504,7 +505,7 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
+                padding: EdgeInsets.fromLTRB(20.w, 4.h, 20.w, 16.h),
                 child: Text(
                   'Tasks shared with you and by you',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -522,25 +523,24 @@ class _HomeScreenState extends State<HomeScreen>
                   String dateTime = '9:50 AM';
 
                   return Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 0),
                     child: Container(
                       decoration: BoxDecoration(
                         color: AppColors.darksurface,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: ListTile(
-                        contentPadding: const EdgeInsets.all(12),
+                        contentPadding: EdgeInsets.all(12.w),
                         leading: CircleAvatar(
-                          radius: 24,
+                          radius: 24.r,
                           backgroundColor:
                               AppColors.darkprimary.withOpacity(0.15),
                           child: Text(
                             personName[0].toUpperCase(),
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppColors.darkprimary,
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: 16.sp,
                             ),
                           ),
                         ),
@@ -553,7 +553,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   ),
                         ),
                         subtitle: Padding(
-                          padding: const EdgeInsets.only(top: 4),
+                          padding: EdgeInsets.only(top: 4.h),
                           child: Text(
                             taskTitle,
                             style: Theme.of(context)
@@ -565,13 +565,13 @@ class _HomeScreenState extends State<HomeScreen>
                           ),
                         ),
                         trailing: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 4.h,
                           ),
                           decoration: BoxDecoration(
                             color: AppColors.darkprimary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(8.r),
                           ),
                           child: Text(
                             dateTime,

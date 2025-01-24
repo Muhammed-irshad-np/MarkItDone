@@ -7,6 +7,7 @@ import 'package:markitdone/providers/view_models/tasks_viewmodel.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:markitdone/ui/widgets/contact_picker_sheet.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TaskCreationBottomSheet extends StatefulWidget {
   const TaskCreationBottomSheet({super.key});
@@ -16,8 +17,8 @@ class TaskCreationBottomSheet extends StatefulWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: AppColors.darksurface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
       builder: (context) => Padding(
         padding: EdgeInsets.only(
@@ -81,17 +82,20 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: const Text('Contact Permission Required'),
-                content: const Text(
+                title: Text('Contact Permission Required',
+                    style: TextStyle(fontSize: 16.sp)),
+                content: Text(
                     'This app needs contact permission to assign tasks to your contacts. '
-                    'Please enable it in app settings.'),
+                    'Please enable it in app settings.',
+                    style: TextStyle(fontSize: 14.sp)),
                 actions: [
                   TextButton(
-                    child: const Text('Cancel'),
+                    child: Text('Cancel', style: TextStyle(fontSize: 14.sp)),
                     onPressed: () => Navigator.pop(context),
                   ),
                   TextButton(
-                    child: const Text('Open Settings'),
+                    child: Text('Open Settings',
+                        style: TextStyle(fontSize: 14.sp)),
                     onPressed: () {
                       openAppSettings();
                       Navigator.pop(context);
@@ -124,8 +128,8 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
       final contact = await showModalBottomSheet<Contact>(
         context: context,
         backgroundColor: AppColors.darksurface,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
         builder: (context) => ContactPickerSheet(contacts: contacts),
       );
@@ -138,8 +142,9 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error accessing contacts'),
+          SnackBar(
+            content: Text('Error accessing contacts',
+                style: TextStyle(fontSize: 14.sp)),
             backgroundColor: AppColors.error,
           ),
         );
@@ -172,13 +177,14 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
         children: [
           Icon(
             icon,
-            size: 16,
+            size: 16.sp,
             color: isSelected ? AppColors.textDark : AppColors.darktextPrimary,
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           Text(
             label,
             style: TextStyle(
+              fontSize: 14.sp,
               color:
                   isSelected ? AppColors.textDark : AppColors.darktextPrimary,
             ),
@@ -191,12 +197,13 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
       selectedColor: AppColors.darkprimary,
       checkmarkColor: AppColors.textDark,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         side: BorderSide(
           color: isSelected ? AppColors.darkprimary : AppColors.cardBorder,
+          width: 1.w,
         ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
     );
   }
 
@@ -217,15 +224,18 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
 
     if (_selectedChip == 'assign' && _selectedContact == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Please select a contact to assign the task')),
+        SnackBar(
+            content: Text('Please select a contact to assign the task',
+                style: TextStyle(fontSize: 14.sp))),
       );
       return false;
     }
 
     if (_selectedChip == 'schedule' && _dueDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a due date for the task')),
+        SnackBar(
+            content: Text('Please select a due date for the task',
+                style: TextStyle(fontSize: 14.sp))),
       );
       return false;
     }
@@ -238,32 +248,35 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
     final viewModel = Provider.of<TasksViewmodel>(context);
 
     return Container(
-      padding: const EdgeInsets.all(24.0),
+      padding: EdgeInsets.all(24.w),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(
             child: Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.only(bottom: 20),
+              width: 40.w,
+              height: 4.h,
+              margin: EdgeInsets.only(bottom: 20.h),
               decoration: BoxDecoration(
                 color: AppColors.darkdivider,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(2.r),
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Add Task',
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium
+                    ?.copyWith(fontSize: 24.sp),
               ),
               IconButton(
-                icon: const Icon(Icons.check),
+                icon: Icon(Icons.check, size: 24.sp),
                 color: AppColors.darkprimary,
                 onPressed: () async {
                   if (_validateTask()) {
@@ -311,7 +324,9 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                       }
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error adding task: $e')),
+                        SnackBar(
+                            content: Text('Error adding task: $e',
+                                style: TextStyle(fontSize: 14.sp))),
                       );
                     }
                   }
@@ -319,7 +334,7 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           Form(
             key: _formKey,
             child: Column(
@@ -333,19 +348,26 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
                     prefixIcon: Icon(
                       Icons.check_circle_outline,
                       color: AppColors.darktextSecondary,
+                      size: 24.sp,
                     ),
                   ),
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(fontSize: 16.sp),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24.h),
                 Text(
                   'Task Options (Optional)',
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontSize: 16.sp),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
+                  spacing: 8.w,
+                  runSpacing: 8.h,
                   children: [
                     _buildChip(
                       label: 'Schedule',
@@ -385,24 +407,25 @@ class _TaskCreationBottomSheetState extends State<TaskCreationBottomSheet> {
     required VoidCallback onTap,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(top: 16),
+      padding: EdgeInsets.only(top: 16.h),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
           decoration: BoxDecoration(
             color: AppColors.inputFill,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8.r),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 16, color: AppColors.darkprimary),
-              const SizedBox(width: 8),
+              Icon(icon, size: 16.sp, color: AppColors.darkprimary),
+              SizedBox(width: 8.w),
               Text(
                 text,
-                style: TextStyle(color: AppColors.darktextPrimary),
+                style: TextStyle(
+                    color: AppColors.darktextPrimary, fontSize: 14.sp),
               ),
             ],
           ),

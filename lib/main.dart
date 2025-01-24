@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:markitdone/data/repositories/add_task_repository.dart';
 import 'package:markitdone/data/repositories/user_repository.dart';
 import 'package:markitdone/providers/view_models/auth_viewmodel.dart';
@@ -50,32 +51,37 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-            create: (context) => AuthViewModel(UserRepository())),
-        ChangeNotifierProvider(
-            create: (context) => TasksViewmodel(AddTaskRepository())),
-        ChangeNotifierProvider(create: (_) => NavigationProvider()),
-      ],
-      child: MaterialApp(
-        title: 'MarkItDone',
-        theme: appTheme(),
-        debugShowCheckedModeBanner: false,
-        initialRoute: initialRoute,
-        routes: {
-          '/onboarding': (context) => const OnboardingScreen(),
-          '/pricing': (context) => const PricingScreen(),
-          '/auth': (context) => const AuthScreen(),
-          '/register': (context) => const RegisterAndPermissionScreen(),
-          '/createdTaskList': (context) => const TaskListingScreen(),
-          '/completedTaskList': (context) => const CompletedTaskScreen(),
-          '/personalTaskList': (context) => const PersonalTaskScreen(),
-          '/assignedTaskList': (context) => const AssignedTaskScreen(),
-          '/scheduledTaskList': (context) => const ScheduleScreen(),
-          '/main': (context) => const MainScreen(),
-          '/home': (context) => const HomeScreen(),
-        },
+    return ScreenUtilInit(
+      designSize: const Size(412, 919),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+              create: (context) => AuthViewModel(UserRepository())),
+          ChangeNotifierProvider(
+              create: (context) => TasksViewmodel(AddTaskRepository())),
+          ChangeNotifierProvider(create: (_) => NavigationProvider()),
+        ],
+        child: MaterialApp(
+          title: 'MarkItDone',
+          theme: appTheme(),
+          debugShowCheckedModeBanner: false,
+          initialRoute: initialRoute,
+          routes: {
+            '/onboarding': (context) => const OnboardingScreen(),
+            '/pricing': (context) => const PricingScreen(),
+            '/auth': (context) => const AuthScreen(),
+            '/register': (context) => const RegisterAndPermissionScreen(),
+            '/createdTaskList': (context) => const TaskListingScreen(),
+            '/completedTaskList': (context) => const CompletedTaskScreen(),
+            '/personalTaskList': (context) => const PersonalTaskScreen(),
+            '/assignedTaskList': (context) => const AssignedTaskScreen(),
+            '/scheduledTaskList': (context) => const ScheduleScreen(),
+            '/main': (context) => const MainScreen(),
+            '/home': (context) => const HomeScreen(),
+          },
+        ),
       ),
     );
   }

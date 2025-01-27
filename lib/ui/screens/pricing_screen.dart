@@ -52,6 +52,7 @@ class PricingScreen extends StatelessWidget {
               SizedBox(height: 40.h),
               Expanded(
                 child: ListView(
+                  physics: const NeverScrollableScrollPhysics(),
                   children: [
                     _buildPlanCard(
                       context,
@@ -78,18 +79,6 @@ class PricingScreen extends StatelessWidget {
                         'Advanced analytics',
                       ],
                       isPro: true,
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/auth');
-                      },
-                      child: Text(
-                        'Skip',
-                        style: TextStyle(
-                          color: AppColors.darktextSecondary,
-                          fontSize: 14.sp,
-                        ),
-                      ),
                     ),
                   ],
                 ),

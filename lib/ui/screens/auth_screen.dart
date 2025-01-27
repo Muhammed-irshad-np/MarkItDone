@@ -74,10 +74,10 @@ class _AuthScreenState extends State<AuthScreen>
         color: theme.primaryColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(16.r),
       ),
-      child: Icon(
-        Icons.check_circle_rounded,
-        size: 56.w,
-        color: theme.primaryColor,
+      child: Image.asset(
+        'assets/images/logo.png',
+        width: 56.w,
+        height: 56.w,
       ),
     );
   }

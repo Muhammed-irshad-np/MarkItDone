@@ -3,13 +3,13 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
   // Brand Colors
-  static const darkprimary = Color(0xFF6C5CE7); // Modern Purple
-  static const darksecondary = Color(0xFF00D2D3); // Bright Cyan
+  static const darkprimary = Color(0xFF2E8B57); // Sea Green
+  static const darksecondary = Color(0xFF3CB371); // Medium Sea Green
   static const darkbackground = Color(0xFF1A1B1E); // Dark Background
   static const darksurface = Color(0xFF2D2D34); // Card Background
   static const error = Color(0xFFFF6B6B); // Soft Red
 
-  static const lightprimary = Color(0xFF1F696D); // Modern Purple
+  static const lightprimary = Color(0xFF2E8B57); // Sea Green
   static const lightbackground = Color(0xFFFFFFFF); // Light Background
   // Task Status Colors
   static const pending = Color(0xFFFFA502); // Warm Orange
@@ -192,11 +192,11 @@ ThemeData lightTheme() {
     hintColor: AppColors.lighttextSecondary,
     dividerColor: AppColors.lightdivider,
     //
-    colorScheme: const ColorScheme.dark(
-      primary: AppColors.darkprimary,
+    colorScheme: const ColorScheme.light(
+      primary: AppColors.lightprimary,
       secondary: AppColors.darksecondary,
       error: AppColors.error,
-      background: AppColors.darkbackground,
+      background: AppColors.lightbackground,
       surface: AppColors.lightbackground,
       onPrimary: AppColors.textLight,
       onSecondary: AppColors.textLight,
@@ -209,13 +209,13 @@ ThemeData lightTheme() {
         fontWeight: FontWeight.w600,
         color: AppColors.lighttextPrimary,
       ),
-       headlineLarge: GoogleFonts.inter(
+      headlineLarge: GoogleFonts.inter(
         fontSize: 32,
         fontWeight: FontWeight.bold,
         color: AppColors.lighttextPrimary,
         letterSpacing: -0.5,
       ),
-          headlineMedium: GoogleFonts.inter(
+      headlineMedium: GoogleFonts.inter(
         fontSize: 24,
         fontWeight: FontWeight.w600,
         color: AppColors.lighttextPrimary,

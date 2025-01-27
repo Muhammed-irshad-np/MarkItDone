@@ -60,9 +60,10 @@ class AuthViewModel extends ChangeNotifier {
     await _userRepository.sendOTP(_phoneNumber!, (String verificationId) {
       _verificationId =
           verificationId; // Store the verification ID for later use
-      _isOTPSent = true; // OTP has been sent successfully
-      notifyListeners();
+      // _isOTPSent = true; // OTP has been sent successfully
     });
+    _isOTPSent = true;
+    notifyListeners();
   }
 
   Future<void> handleOtpSubmit(
